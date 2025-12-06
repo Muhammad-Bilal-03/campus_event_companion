@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../providers/app_provider.dart';
-import '../models/event_model.dart';
 import 'welcome_screen.dart';
 
 class StudentHomeScreen extends StatefulWidget {
@@ -13,7 +13,6 @@ class StudentHomeScreen extends StatefulWidget {
 }
 
 class _StudentHomeScreenState extends State<StudentHomeScreen> {
-  final _searchController = TextEditingController();
   String _searchQuery = "";
 
   @override
@@ -33,9 +32,9 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: const Color(0xFF6A11CB),
-        title: const Text(
+        title: Text(
           'Student Dashboard',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
         ),
         actions: [
           IconButton(
@@ -54,7 +53,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
         children: [
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 25),
+            padding: const EdgeInsets.fromLTRB(20, 10, 20, 30),
             decoration: const BoxDecoration(
               color: Color(0xFF6A11CB),
               borderRadius: BorderRadius.only(
@@ -65,25 +64,21 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'My Campus Feed',
-                  style: TextStyle(
+                  style: GoogleFonts.poppins(
                     color: Colors.white,
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 16),
-
                 TextField(
-                  controller: _searchController,
-                  onChanged: (value) {
-                    setState(() {
-                      _searchQuery = value;
-                    });
-                  },
+                  onChanged: (value) => setState(() => _searchQuery = value),
+                  style: GoogleFonts.poppins(),
                   decoration: InputDecoration(
-                    hintText: 'Search events, venue, or category...',
+                    hintText: 'Search events, venue...',
+                    hintStyle: GoogleFonts.poppins(color: Colors.grey[400]),
                     prefixIcon: const Icon(Icons.search, color: Colors.grey),
                     filled: true,
                     fillColor: Colors.white,
@@ -97,7 +92,6 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
               ],
             ),
           ),
-
           Expanded(
             child: events.isEmpty
                 ? Center(
@@ -105,7 +99,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
-                          Icons.search_off,
+                          Icons.event_busy,
                           size: 80,
                           color: Colors.grey[300],
                         ),
@@ -114,7 +108,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                           _searchQuery.isEmpty
                               ? 'No events posted yet'
                               : 'No results found',
-                          style: TextStyle(color: Colors.grey[500]),
+                          style: GoogleFonts.poppins(color: Colors.grey[500]),
                         ),
                       ],
                     ),
@@ -128,12 +122,12 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                         margin: const EdgeInsets.only(bottom: 16),
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withOpacity(0.05),
-                              blurRadius: 10,
-                              offset: const Offset(0, 4),
+                              blurRadius: 15,
+                              offset: const Offset(0, 5),
                             ),
                           ],
                         ),
@@ -150,23 +144,23 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                                   color: const Color(
                                     0xFF6A11CB,
                                   ).withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(15),
                                 ),
                                 child: Column(
                                   children: [
                                     Text(
                                       DateFormat('dd').format(event.date),
-                                      style: const TextStyle(
+                                      style: GoogleFonts.poppins(
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 20,
-                                        color: Color(0xFF6A11CB),
+                                        fontSize: 22,
+                                        color: const Color(0xFF6A11CB),
                                       ),
                                     ),
                                     Text(
                                       DateFormat('MMM').format(event.date),
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        color: Color(0xFF6A11CB),
+                                      style: GoogleFonts.poppins(
+                                        fontWeight: FontWeight.w600,
+                                        color: const Color(0xFF6A11CB),
                                       ),
                                     ),
                                   ],
@@ -179,12 +173,12 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                                   children: [
                                     Text(
                                       event.title,
-                                      style: const TextStyle(
+                                      style: GoogleFonts.poppins(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,
                                       ),
                                     ),
-                                    const SizedBox(height: 4),
+                                    const SizedBox(height: 6),
                                     Row(
                                       children: [
                                         Icon(
@@ -195,29 +189,30 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                                         const SizedBox(width: 4),
                                         Text(
                                           event.location,
-                                          style: TextStyle(
-                                            color: Colors.grey[500],
+                                          style: GoogleFonts.poppins(
+                                            color: Colors.grey[600],
                                             fontSize: 13,
                                           ),
                                         ),
                                       ],
                                     ),
-                                    const SizedBox(height: 6),
+                                    const SizedBox(height: 8),
                                     Container(
                                       padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 2,
+                                        horizontal: 10,
+                                        vertical: 4,
                                       ),
                                       decoration: BoxDecoration(
                                         color: Colors.orange.withOpacity(0.1),
-                                        borderRadius: BorderRadius.circular(4),
+                                        borderRadius: BorderRadius.circular(8),
                                       ),
                                       child: Text(
-                                        event.category,
-                                        style: const TextStyle(
+                                        event.category.toUpperCase(),
+                                        style: GoogleFonts.poppins(
                                           color: Colors.orange,
-                                          fontSize: 11,
+                                          fontSize: 10,
                                           fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.5,
                                         ),
                                       ),
                                     ),
@@ -231,7 +226,8 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                                       : Icons.notifications_none,
                                   color: event.isFavorite
                                       ? const Color(0xFF6A11CB)
-                                      : Colors.grey,
+                                      : Colors.grey[400],
+                                  size: 28,
                                 ),
                                 onPressed: () =>
                                     provider.toggleReminder(event.id),

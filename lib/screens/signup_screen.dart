@@ -106,7 +106,9 @@ class _SignupScreenState extends State<SignupScreen> {
                           Container(
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF6A11CB).withOpacity(0.1),
+                              color: const Color(
+                                0xFF6A11CB,
+                              ).withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: const Icon(
@@ -216,8 +218,8 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                         decoration: BoxDecoration(
                           color: _isAdmin
-                              ? Colors.redAccent.withOpacity(0.1)
-                              : const Color(0xFF6A11CB).withOpacity(0.1),
+                              ? Colors.redAccent.withValues(alpha: 0.1)
+                              : const Color(0xFF6A11CB).withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(15),
                           border: Border.all(
                             color: _isAdmin
@@ -240,11 +242,11 @@ class _SignupScreenState extends State<SignupScreen> {
                             ),
                           ),
                           value: _isAdmin,
-                          activeColor: Colors.redAccent,
+                          activeThumbColor: Colors.redAccent,
                           inactiveThumbColor: const Color(0xFF6A11CB),
                           inactiveTrackColor: const Color(
                             0xFF6A11CB,
-                          ).withOpacity(0.3),
+                          ).withValues(alpha: 0.3),
                           onChanged: (val) => setState(() => _isAdmin = val),
                         ),
                       ),

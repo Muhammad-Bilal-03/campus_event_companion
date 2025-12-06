@@ -76,7 +76,7 @@ class _StudentLoginScreenState extends State<StudentLoginScreen> {
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF6A11CB).withOpacity(0.1),
+                          color: const Color(0xFF6A11CB).withValues(alpha: 0.1),
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(

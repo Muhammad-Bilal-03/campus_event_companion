@@ -75,7 +75,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF2E3192).withOpacity(0.1),
+                          color: const Color(0xFF2E3192).withValues(alpha: 0.1),
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(

@@ -111,7 +111,9 @@ class AdminHomeScreen extends StatelessWidget {
                                     vertical: 12,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.redAccent.withOpacity(0.2),
+                                    color: Colors.redAccent.withValues(
+                                      alpha: 0.2,
+                                    ),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Column(
