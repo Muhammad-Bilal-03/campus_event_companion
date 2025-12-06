@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../providers/app_provider.dart';
 import 'add_event_screen.dart';
 import 'welcome_screen.dart';
@@ -14,17 +15,20 @@ class AdminHomeScreen extends StatelessWidget {
     final events = provider.events;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF1E1E1E),
+      backgroundColor: const Color(0xFF121212), // Deep Dark Background
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.transparent,
-        title: const Text(
+        backgroundColor: const Color(0xFF1E1E1E),
+        title: Text(
           'Admin Console',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: GoogleFonts.poppins(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout_rounded, color: Colors.white),
+            icon: const Icon(Icons.logout_rounded, color: Colors.white70),
             onPressed: () {
               provider.logout();
               Navigator.of(context).pushAndRemoveUntil(
@@ -41,24 +45,45 @@ class AdminHomeScreen extends StatelessWidget {
             context,
           ).push(MaterialPageRoute(builder: (_) => const AddEventScreen()));
         },
-        backgroundColor: Colors.redAccent,
+        backgroundColor: const Color(0xFFE53935), // Red Accent
+        foregroundColor: Colors.white,
         icon: const Icon(Icons.add),
-        label: const Text('Add Event'),
+        label: Text(
+          'NEW EVENT',
+          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+        ),
       ),
       body: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.all(20.0),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Manage Events',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                ),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(24),
+            decoration: const BoxDecoration(
+              color: Color(0xFF1E1E1E),
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(30),
+                bottomRight: Radius.circular(30),
               ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Manage Events',
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  'Tap an event to edit details',
+                  style: GoogleFonts.poppins(
+                    color: Colors.white38,
+                    fontSize: 14,
+                  ),
+                ),
+              ],
             ),
           ),
           Expanded(
@@ -70,12 +95,12 @@ class AdminHomeScreen extends StatelessWidget {
                         Icon(
                           Icons.dashboard_customize,
                           size: 80,
-                          color: Colors.grey[700],
+                          color: Colors.white12,
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          'No events created',
-                          style: TextStyle(color: Colors.grey[600]),
+                          'No active events',
+                          style: GoogleFonts.poppins(color: Colors.white38),
                         ),
                       ],
                     ),
@@ -85,22 +110,30 @@ class AdminHomeScreen extends StatelessWidget {
                     itemCount: events.length,
                     itemBuilder: (context, index) {
                       final event = events[index];
-                      return InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => AddEventScreen(event: event),
+                      return Container(
+                        margin: const EdgeInsets.only(bottom: 16),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF2C2C2C), // Dark Card
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: Colors.white10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.3),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
                             ),
-                          );
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.only(bottom: 16),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF2C2C2C),
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: Colors.white10),
-                          ),
+                          ],
+                        ),
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => AddEventScreen(event: event),
+                              ),
+                            );
+                          },
+                          borderRadius: BorderRadius.circular(16),
                           child: Padding(
                             padding: const EdgeInsets.all(16),
                             child: Row(
@@ -111,26 +144,31 @@ class AdminHomeScreen extends StatelessWidget {
                                     vertical: 12,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.redAccent.withValues(
-                                      alpha: 0.2,
-                                    ),
+                                    color: const Color(
+                                      0xFFE53935,
+                                    ).withOpacity(0.1),
                                     borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: const Color(
+                                        0xFFE53935,
+                                      ).withOpacity(0.3),
+                                    ),
                                   ),
                                   child: Column(
                                     children: [
                                       Text(
                                         DateFormat('dd').format(event.date),
-                                        style: const TextStyle(
+                                        style: GoogleFonts.poppins(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 20,
-                                          color: Colors.redAccent,
+                                          color: const Color(0xFFE53935),
                                         ),
                                       ),
                                       Text(
                                         DateFormat('MMM').format(event.date),
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.redAccent,
+                                        style: GoogleFonts.poppins(
+                                          fontWeight: FontWeight.w600,
+                                          color: const Color(0xFFE53935),
                                         ),
                                       ),
                                     ],
@@ -144,26 +182,50 @@ class AdminHomeScreen extends StatelessWidget {
                                     children: [
                                       Text(
                                         event.title,
-                                        style: const TextStyle(
+                                        style: GoogleFonts.poppins(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16,
                                           color: Colors.white,
                                         ),
                                       ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        event.location,
-                                        style: const TextStyle(
-                                          color: Colors.white60,
-                                          fontSize: 13,
-                                        ),
+                                      const SizedBox(height: 6),
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.location_on,
+                                            size: 14,
+                                            color: Colors.white38,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            event.location,
+                                            style: GoogleFonts.poppins(
+                                              color: Colors.white60,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        event.category,
-                                        style: const TextStyle(
-                                          color: Colors.orangeAccent,
-                                          fontSize: 12,
+                                      const SizedBox(height: 8),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                          vertical: 4,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.orange.withOpacity(0.1),
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          event.category.toUpperCase(),
+                                          style: GoogleFonts.poppins(
+                                            color: Colors.orangeAccent,
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                            letterSpacing: 0.5,
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -172,7 +234,7 @@ class AdminHomeScreen extends StatelessWidget {
                                 IconButton(
                                   icon: const Icon(
                                     Icons.delete_outline,
-                                    color: Colors.red,
+                                    color: Colors.white38,
                                   ),
                                   onPressed: () =>
                                       provider.deleteEvent(event.id),
