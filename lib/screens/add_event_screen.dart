@@ -6,7 +6,8 @@ import '../models/event_model.dart';
 import '../providers/app_provider.dart';
 
 class AddEventScreen extends StatefulWidget {
-  const AddEventScreen({super.key});
+  final Event? event; // Optional: If provided, we are in "Edit Mode"
+  const AddEventScreen({super.key, this.event});
 
   @override
   State<AddEventScreen> createState() => _AddEventScreenState();
@@ -20,15 +21,30 @@ class _AddEventScreenState extends State<AddEventScreen> {
   DateTime _selectedDate = DateTime.now();
   final _formKey = GlobalKey<FormState>();
 
+  @override
+  void initState() {
+    super.initState();
+    // If editing, pre-fill the data
+    if (widget.event != null) {
+      _titleController.text = widget.event!.title;
+      _descController.text = widget.event!.description;
+      _locationController.text = widget.event!.location;
+      _categoryController.text = widget.event!.category;
+      _selectedDate = widget.event!.date;
+    }
+  }
+
   void _submit() {
     if (_formKey.currentState!.validate()) {
       final event = Event(
-        id: const Uuid().v4(),
+        // If editing, keep old ID. If new, generate new ID.
+        id: widget.event?.id ?? const Uuid().v4(),
         title: _titleController.text,
         description: _descController.text,
         date: _selectedDate,
         location: _locationController.text,
         category: _categoryController.text,
+        isFavorite: widget.event?.isFavorite ?? false,
       );
 
       Provider.of<AppProvider>(context, listen: false).addEvent(event);
@@ -62,10 +78,12 @@ class _AddEventScreenState extends State<AddEventScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isEditing = widget.event != null;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F7),
       appBar: AppBar(
-        title: const Text('Create Event'),
+        title: Text(isEditing ? 'Edit Event' : 'Create Event'),
         backgroundColor: const Color(0xFF6A11CB),
         elevation: 0,
       ),
@@ -203,9 +221,9 @@ class _AddEventScreenState extends State<AddEventScreen> {
                                 borderRadius: BorderRadius.circular(12),
                               ),
                             ),
-                            child: const Text(
-                              'PUBLISH EVENT',
-                              style: TextStyle(
+                            child: Text(
+                              isEditing ? 'UPDATE EVENT' : 'PUBLISH EVENT',
+                              style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
                               ),
