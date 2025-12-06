@@ -42,6 +42,18 @@ class _AddEventScreenState extends State<AddEventScreen> {
       initialDate: _selectedDate,
       firstDate: DateTime.now(),
       lastDate: DateTime(2030),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Color(0xFF6A11CB),
+              onPrimary: Colors.white,
+              onSurface: Colors.black,
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
     if (picked != null) {
       setState(() => _selectedDate = picked);
@@ -51,63 +63,162 @@ class _AddEventScreenState extends State<AddEventScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Add New Event')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              TextFormField(
-                controller: _titleController,
-                decoration: const InputDecoration(labelText: 'Event Title'),
-                validator: (v) => v!.isEmpty ? 'Required' : null,
+      backgroundColor: const Color(0xFFF5F5F7),
+      appBar: AppBar(
+        title: const Text('Create Event'),
+        backgroundColor: const Color(0xFF6A11CB),
+        elevation: 0,
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              height: 20,
+              decoration: const BoxDecoration(
+                color: Color(0xFF6A11CB),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(30),
+                  bottomRight: Radius.circular(30),
+                ),
               ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _descController,
-                decoration: const InputDecoration(labelText: 'Description'),
-                maxLines: 3,
-                validator: (v) => v!.isEmpty ? 'Required' : null,
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Date: ${DateFormat('yyyy-MM-dd').format(_selectedDate)}',
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Event Details',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        TextFormField(
+                          controller: _titleController,
+                          decoration: InputDecoration(
+                            labelText: 'Title',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            prefixIcon: const Icon(Icons.title),
+                          ),
+                          validator: (v) => v!.isEmpty ? 'Required' : null,
+                        ),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: _descController,
+                          maxLines: 3,
+                          decoration: InputDecoration(
+                            labelText: 'Description',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            prefixIcon: const Icon(Icons.description),
+                          ),
+                          validator: (v) => v!.isEmpty ? 'Required' : null,
+                        ),
+                        const SizedBox(height: 16),
+                        InkWell(
+                          onTap: _pickDate,
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.calendar_today,
+                                  color: Colors.grey,
+                                ),
+                                const SizedBox(width: 10),
+                                Text(
+                                  DateFormat(
+                                    'EEEE, MMM d, yyyy',
+                                  ).format(_selectedDate),
+                                  style: const TextStyle(fontSize: 16),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextFormField(
+                                controller: _locationController,
+                                decoration: InputDecoration(
+                                  labelText: 'Location',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  prefixIcon: const Icon(Icons.location_on),
+                                ),
+                                validator: (v) =>
+                                    v!.isEmpty ? 'Required' : null,
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: TextFormField(
+                                controller: _categoryController,
+                                decoration: InputDecoration(
+                                  labelText: 'Category',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  prefixIcon: const Icon(Icons.label),
+                                ),
+                                validator: (v) =>
+                                    v!.isEmpty ? 'Required' : null,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 32),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 50,
+                          child: ElevatedButton(
+                            onPressed: _submit,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF6A11CB),
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            child: const Text(
+                              'PUBLISH EVENT',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  TextButton(
-                    onPressed: _pickDate,
-                    child: const Text('Select Date'),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _locationController,
-                decoration: const InputDecoration(labelText: 'Location'),
-                validator: (v) => v!.isEmpty ? 'Required' : null,
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _categoryController,
-                decoration: const InputDecoration(labelText: 'Category'),
-                validator: (v) => v!.isEmpty ? 'Required' : null,
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: _submit,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepPurple,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.all(16),
                 ),
-                child: const Text('Create Event'),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
