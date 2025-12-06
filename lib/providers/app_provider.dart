@@ -1,0 +1,81 @@
+import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import '../models/event_model.dart';
+import '../models/user_model.dart';
+
+class AppProvider with ChangeNotifier {
+  Box<Event>? _eventBox;
+  Box<User>? _userBox;
+  User? _currentUser;
+
+  List<Event> _events = [];
+  List<Event> get events => _events;
+  User? get currentUser => _currentUser;
+
+  bool get isAdmin => _currentUser?.isAdmin ?? false;
+
+  Future<void> init() async {
+    await Hive.initFlutter();
+    Hive.registerAdapter(EventAdapter());
+    Hive.registerAdapter(UserAdapter());
+
+    _eventBox = await Hive.openBox<Event>('events');
+    _userBox = await Hive.openBox<User>('users');
+
+    if (_userBox!.isEmpty) {
+      _userBox!.put(
+        'admin',
+        User(username: 'admin', password: '123', isAdmin: true),
+      );
+      _userBox!.put(
+        'student',
+        User(username: 'student', password: '123', isAdmin: false),
+      );
+    }
+
+    _loadEvents();
+  }
+
+  void _loadEvents() {
+    _events = _eventBox!.values.toList();
+    _events.sort((a, b) => a.date.compareTo(b.date));
+    notifyListeners();
+  }
+
+  bool login(String username, String password) {
+    try {
+      final user = _userBox!.values.firstWhere(
+        (u) => u.username == username && u.password == password,
+      );
+      _currentUser = user;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  void logout() {
+    _currentUser = null;
+    notifyListeners();
+  }
+
+  Future<void> addEvent(Event event) async {
+    await _eventBox!.put(event.id, event);
+    _loadEvents();
+  }
+
+  Future<void> deleteEvent(String id) async {
+    await _eventBox!.delete(id);
+    _loadEvents();
+  }
+
+  Future<void> toggleReminder(String id) async {
+    final event = _eventBox!.get(id);
+    if (event != null) {
+      event.isFavorite = !event.isFavorite;
+      await event.save();
+      _loadEvents();
+    }
+  }
+}
