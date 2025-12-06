@@ -118,7 +118,7 @@ class AdminHomeScreen extends StatelessWidget {
                           border: Border.all(color: Colors.white10),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.3),
+                              color: Colors.black.withValues(alpha: 0.3),
                               blurRadius: 10,
                               offset: const Offset(0, 4),
                             ),
@@ -146,12 +146,12 @@ class AdminHomeScreen extends StatelessWidget {
                                   decoration: BoxDecoration(
                                     color: const Color(
                                       0xFFE53935,
-                                    ).withOpacity(0.1),
+                                    ).withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(12),
                                     border: Border.all(
                                       color: const Color(
                                         0xFFE53935,
-                                      ).withOpacity(0.3),
+                                      ).withValues(alpha: 0.3),
                                     ),
                                   ),
                                   child: Column(
@@ -213,7 +213,9 @@ class AdminHomeScreen extends StatelessWidget {
                                           vertical: 4,
                                         ),
                                         decoration: BoxDecoration(
-                                          color: Colors.orange.withOpacity(0.1),
+                                          color: Colors.orange.withValues(
+                                            alpha: 0.1,
+                                          ),
                                           borderRadius: BorderRadius.circular(
                                             8,
                                           ),

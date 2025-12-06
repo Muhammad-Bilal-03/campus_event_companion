@@ -125,7 +125,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
+                              color: Colors.black.withValues(alpha: 0.05),
                               blurRadius: 15,
                               offset: const Offset(0, 5),
                             ),
@@ -143,7 +143,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                                 decoration: BoxDecoration(
                                   color: const Color(
                                     0xFF6A11CB,
-                                  ).withOpacity(0.1),
+                                  ).withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(15),
                                 ),
                                 child: Column(
@@ -203,7 +203,9 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                                         vertical: 4,
                                       ),
                                       decoration: BoxDecoration(
-                                        color: Colors.orange.withOpacity(0.1),
+                                        color: Colors.orange.withValues(
+                                          alpha: 0.1,
+                                        ),
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                       child: Text(
