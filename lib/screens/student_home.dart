@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../providers/app_provider.dart';
-import '../models/event_model.dart'; // Needed for event type
+import '../models/event_model.dart';
 import 'welcome_screen.dart';
 
 class StudentHomeScreen extends StatefulWidget {
@@ -21,7 +21,6 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
     final provider = Provider.of<AppProvider>(context);
     final allEvents = provider.events;
 
-    // Filter events based on search query
     final events = allEvents.where((event) {
       final query = _searchQuery.toLowerCase();
       return event.title.toLowerCase().contains(query) ||
@@ -53,7 +52,6 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
       ),
       body: Column(
         children: [
-          // Header & Search
           Container(
             width: double.infinity,
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 25),
@@ -76,7 +74,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                // Search Bar
+
                 TextField(
                   controller: _searchController,
                   onChanged: (value) {
@@ -100,7 +98,6 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
             ),
           ),
 
-          // Event List
           Expanded(
             child: events.isEmpty
                 ? Center(

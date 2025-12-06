@@ -6,7 +6,7 @@ import '../models/event_model.dart';
 import '../providers/app_provider.dart';
 
 class AddEventScreen extends StatefulWidget {
-  final Event? event; // Optional: If provided, we are in "Edit Mode"
+  final Event? event;
   const AddEventScreen({super.key, this.event});
 
   @override
@@ -24,7 +24,6 @@ class _AddEventScreenState extends State<AddEventScreen> {
   @override
   void initState() {
     super.initState();
-    // If editing, pre-fill the data
     if (widget.event != null) {
       _titleController.text = widget.event!.title;
       _descController.text = widget.event!.description;
@@ -37,7 +36,6 @@ class _AddEventScreenState extends State<AddEventScreen> {
   void _submit() {
     if (_formKey.currentState!.validate()) {
       final event = Event(
-        // If editing, keep old ID. If new, generate new ID.
         id: widget.event?.id ?? const Uuid().v4(),
         title: _titleController.text,
         description: _descController.text,

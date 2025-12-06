@@ -55,6 +55,19 @@ class AppProvider with ChangeNotifier {
     }
   }
 
+  bool signUp(String username, String password, bool isAdmin) {
+    if (_userBox!.values.any((u) => u.username == username)) {
+      return false;
+    }
+    final newUser = User(
+      username: username,
+      password: password,
+      isAdmin: isAdmin,
+    );
+    _userBox!.add(newUser);
+    return true;
+  }
+
   void logout() {
     _currentUser = null;
     notifyListeners();

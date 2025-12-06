@@ -85,7 +85,6 @@ class AdminHomeScreen extends StatelessWidget {
                     itemCount: events.length,
                     itemBuilder: (context, index) {
                       final event = events[index];
-                      // Added InkWell to handle taps for EDITING
                       return InkWell(
                         onTap: () {
                           Navigator.push(
