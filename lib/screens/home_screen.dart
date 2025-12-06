@@ -25,7 +25,7 @@ class HomeScreen extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout_rounded),
+            icon: const Icon(Icons.logout_rounded, color: Colors.white),
             onPressed: () {
               provider.logout();
               Navigator.of(context).pushReplacement(
@@ -43,8 +43,11 @@ class HomeScreen extends StatelessWidget {
                 );
               },
               backgroundColor: const Color(0xFF6A11CB),
-              icon: const Icon(Icons.add),
-              label: const Text('New Event'),
+              icon: const Icon(Icons.add, color: Colors.white),
+              label: const Text(
+                'New Event',
+                style: TextStyle(color: Colors.white),
+              ),
             )
           : null,
       body: Column(
