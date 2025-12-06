@@ -2,15 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../providers/app_provider.dart';
+import '../models/event_model.dart'; // Needed for event type
 import 'welcome_screen.dart';
 
-class StudentHomeScreen extends StatelessWidget {
+class StudentHomeScreen extends StatefulWidget {
   const StudentHomeScreen({super.key});
+
+  @override
+  State<StudentHomeScreen> createState() => _StudentHomeScreenState();
+}
+
+class _StudentHomeScreenState extends State<StudentHomeScreen> {
+  final _searchController = TextEditingController();
+  String _searchQuery = "";
 
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<AppProvider>(context);
-    final events = provider.events;
+    final allEvents = provider.events;
+
+    // Filter events based on search query
+    final events = allEvents.where((event) {
+      final query = _searchQuery.toLowerCase();
+      return event.title.toLowerCase().contains(query) ||
+          event.category.toLowerCase().contains(query) ||
+          event.location.toLowerCase().contains(query);
+    }).toList();
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F7),
@@ -36,10 +53,10 @@ class StudentHomeScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          // Header Section
+          // Header & Search
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 25),
             decoration: const BoxDecoration(
               color: Color(0xFF6A11CB),
               borderRadius: BorderRadius.only(
@@ -47,20 +64,36 @@ class StudentHomeScreen extends StatelessWidget {
                 bottomRight: Radius.circular(30),
               ),
             ),
-            child: const Column(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Welcome back!',
-                  style: TextStyle(color: Colors.white70, fontSize: 16),
-                ),
-                SizedBox(height: 5),
-                Text(
+                const Text(
                   'My Campus Feed',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                // Search Bar
+                TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    setState(() {
+                      _searchQuery = value;
+                    });
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Search events, venue, or category...',
+                    prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: BorderSide.none,
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 20),
                   ),
                 ),
               ],
@@ -75,13 +108,15 @@ class StudentHomeScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
-                          Icons.event_available,
+                          Icons.search_off,
                           size: 80,
                           color: Colors.grey[300],
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          'No events posted yet',
+                          _searchQuery.isEmpty
+                              ? 'No events posted yet'
+                              : 'No results found',
                           style: TextStyle(color: Colors.grey[500]),
                         ),
                       ],
@@ -109,7 +144,6 @@ class StudentHomeScreen extends StatelessWidget {
                           padding: const EdgeInsets.all(16),
                           child: Row(
                             children: [
-                              // Date Badge
                               Container(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 16,
@@ -142,7 +176,6 @@ class StudentHomeScreen extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(width: 16),
-                              // Event Info
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -194,7 +227,6 @@ class StudentHomeScreen extends StatelessWidget {
                                   ],
                                 ),
                               ),
-                              // Reminder Button
                               IconButton(
                                 icon: Icon(
                                   event.isFavorite
