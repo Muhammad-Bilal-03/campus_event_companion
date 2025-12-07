@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../models/event_model.dart';
 import '../models/user_model.dart';
+import '../services/notification_service.dart';
 
 class AppProvider with ChangeNotifier {
   Box<Event>? _eventBox;
@@ -88,6 +89,24 @@ class AppProvider with ChangeNotifier {
     if (event != null) {
       event.isFavorite = !event.isFavorite;
       await event.save();
+
+      if (event.isFavorite) {
+        // Trigger Immediate Notification
+        NotificationService.showNotification(
+          id: event.id.hashCode,
+          title: 'Reminder Set!',
+          body: 'You will be reminded about "${event.title}"',
+        );
+        if (event.date.isAfter(DateTime.now())) {
+          NotificationService.scheduleNotification(
+            id: event.id.hashCode + 1,
+            title: 'Upcoming Event!',
+            body: '${event.title} is starting soon at ${event.location}.',
+            scheduledDate: event.date.subtract(const Duration(hours: 1)),
+          );
+        }
+      }
+
       _loadEvents();
     }
   }
