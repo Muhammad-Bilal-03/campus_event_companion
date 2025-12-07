@@ -145,7 +145,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                             });
                           },
                           selectedColor: Colors.white,
-                          backgroundColor: Colors.white.withOpacity(0.2),
+                          backgroundColor: Colors.grey.shade400,
                           labelStyle: GoogleFonts.poppins(
                             color: isSelected
                                 ? const Color(0xFF2E3192)
@@ -196,7 +196,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
+                              color: Colors.black.withValues(alpha: 0.05),
                               blurRadius: 15,
                               offset: const Offset(0, 5),
                             ),
@@ -294,7 +294,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                                         decoration: BoxDecoration(
                                           color: const Color(
                                             0xFF2E3192,
-                                          ).withOpacity(0.1),
+                                          ).withValues(alpha: 0.1),
                                           borderRadius: BorderRadius.circular(
                                             8,
                                           ),
@@ -318,7 +318,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                                         ? Icons.notifications_active
                                         : Icons.notifications_none,
                                     color: event.isFavorite
-                                        ? const Color(0xFF2E3192)
+                                        ? const Color(0xFFFFC107)
                                         : Colors.grey[400],
                                     size: 28,
                                   ),
