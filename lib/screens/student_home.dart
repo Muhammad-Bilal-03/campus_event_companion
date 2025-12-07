@@ -134,7 +134,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                             });
                           },
                           selectedColor: Colors.white,
-                          backgroundColor: Colors.white.withValues(alpha: 0.2),
+                          backgroundColor: Colors.grey.shade400,
                           labelStyle: GoogleFonts.poppins(
                             color: isSelected
                                 ? const Color(0xFF2E3192)
