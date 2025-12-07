@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../providers/app_provider.dart';
 import 'welcome_screen.dart';
 import 'event_details_screen.dart';
+import 'calendar_screen.dart'; // Import the new calendar screen
 
 class StudentHomeScreen extends StatefulWidget {
   const StudentHomeScreen({super.key});
@@ -58,6 +59,16 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
           ),
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.calendar_month, color: Colors.white),
+            tooltip: "Calendar View",
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const CalendarScreen()),
+              );
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.logout_rounded, color: Colors.white),
             onPressed: () {
@@ -134,7 +145,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                             });
                           },
                           selectedColor: Colors.white,
-                          backgroundColor: Colors.grey.shade400,
+                          backgroundColor: Colors.white.withOpacity(0.2),
                           labelStyle: GoogleFonts.poppins(
                             color: isSelected
                                 ? const Color(0xFF2E3192)
@@ -185,7 +196,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.05),
+                              color: Colors.black.withOpacity(0.05),
                               blurRadius: 15,
                               offset: const Offset(0, 5),
                             ),
@@ -283,7 +294,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                                         decoration: BoxDecoration(
                                           color: const Color(
                                             0xFF2E3192,
-                                          ).withValues(alpha: 0.1),
+                                          ).withOpacity(0.1),
                                           borderRadius: BorderRadius.circular(
                                             8,
                                           ),
