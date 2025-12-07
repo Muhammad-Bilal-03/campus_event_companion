@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:intl/intl.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../models/event_model.dart';
 import '../providers/app_provider.dart';
 
@@ -60,7 +61,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.light(
-              primary: Color(0xFF6A11CB),
+              primary: Color(0xFF2E3192),
               onPrimary: Colors.white,
               onSurface: Colors.black,
             ),
@@ -81,8 +82,20 @@ class _AddEventScreenState extends State<AddEventScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F7),
       appBar: AppBar(
-        title: Text(isEditing ? 'Edit Event' : 'Create Event'),
-        backgroundColor: const Color(0xFF6A11CB),
+        title: Text(
+          isEditing ? 'Edit Event' : 'Create Event',
+          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+        ),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF2E3192), Color(0xFF1BFFFF)],
+            ),
+          ),
+        ),
+        foregroundColor: Colors.white,
         elevation: 0,
       ),
       body: SingleChildScrollView(
@@ -92,7 +105,11 @@ class _AddEventScreenState extends State<AddEventScreen> {
               width: double.infinity,
               height: 20,
               decoration: const BoxDecoration(
-                color: Color(0xFF6A11CB),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color(0xFF2E3192), Color(0xFF1BFFFF)],
+                ),
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(30),
                   bottomRight: Radius.circular(30),
@@ -113,22 +130,27 @@ class _AddEventScreenState extends State<AddEventScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'Event Details',
-                          style: TextStyle(
+                          style: GoogleFonts.poppins(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
+                            color: const Color(0xFF2E3192),
                           ),
                         ),
                         const SizedBox(height: 20),
                         TextFormField(
                           controller: _titleController,
+                          style: GoogleFonts.poppins(),
                           decoration: InputDecoration(
                             labelText: 'Title',
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            prefixIcon: const Icon(Icons.title),
+                            prefixIcon: const Icon(
+                              Icons.title,
+                              color: Color(0xFF2E3192),
+                            ),
                           ),
                           validator: (v) => v!.isEmpty ? 'Required' : null,
                         ),
@@ -136,12 +158,16 @@ class _AddEventScreenState extends State<AddEventScreen> {
                         TextFormField(
                           controller: _descController,
                           maxLines: 3,
+                          style: GoogleFonts.poppins(),
                           decoration: InputDecoration(
                             labelText: 'Description',
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            prefixIcon: const Icon(Icons.description),
+                            prefixIcon: const Icon(
+                              Icons.description,
+                              color: Color(0xFF2E3192),
+                            ),
                           ),
                           validator: (v) => v!.isEmpty ? 'Required' : null,
                         ),
@@ -159,14 +185,14 @@ class _AddEventScreenState extends State<AddEventScreen> {
                               children: [
                                 const Icon(
                                   Icons.calendar_today,
-                                  color: Colors.grey,
+                                  color: Color(0xFF2E3192),
                                 ),
                                 const SizedBox(width: 10),
                                 Text(
                                   DateFormat(
                                     'EEEE, MMM d, yyyy',
                                   ).format(_selectedDate),
-                                  style: const TextStyle(fontSize: 16),
+                                  style: GoogleFonts.poppins(fontSize: 16),
                                 ),
                               ],
                             ),
@@ -178,12 +204,16 @@ class _AddEventScreenState extends State<AddEventScreen> {
                             Expanded(
                               child: TextFormField(
                                 controller: _locationController,
+                                style: GoogleFonts.poppins(),
                                 decoration: InputDecoration(
                                   labelText: 'Location',
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
                                   ),
-                                  prefixIcon: const Icon(Icons.location_on),
+                                  prefixIcon: const Icon(
+                                    Icons.location_on,
+                                    color: Color(0xFF2E3192),
+                                  ),
                                 ),
                                 validator: (v) =>
                                     v!.isEmpty ? 'Required' : null,
@@ -193,12 +223,16 @@ class _AddEventScreenState extends State<AddEventScreen> {
                             Expanded(
                               child: TextFormField(
                                 controller: _categoryController,
+                                style: GoogleFonts.poppins(),
                                 decoration: InputDecoration(
                                   labelText: 'Category',
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
                                   ),
-                                  prefixIcon: const Icon(Icons.label),
+                                  prefixIcon: const Icon(
+                                    Icons.label,
+                                    color: Color(0xFF2E3192),
+                                  ),
                                 ),
                                 validator: (v) =>
                                     v!.isEmpty ? 'Required' : null,
@@ -213,7 +247,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
                           child: ElevatedButton(
                             onPressed: _submit,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF6A11CB),
+                              backgroundColor: const Color(0xFF2E3192),
                               foregroundColor: Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -221,7 +255,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
                             ),
                             child: Text(
                               isEditing ? 'UPDATE EVENT' : 'PUBLISH EVENT',
-                              style: const TextStyle(
+                              style: GoogleFonts.poppins(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
                               ),

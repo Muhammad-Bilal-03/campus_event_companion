@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../providers/app_provider.dart';
 import 'add_event_screen.dart';
 import 'welcome_screen.dart';
+import 'create_admin_screen.dart';
 
 class AdminHomeScreen extends StatelessWidget {
   const AdminHomeScreen({super.key});
@@ -15,10 +16,18 @@ class AdminHomeScreen extends StatelessWidget {
     final events = provider.events;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF121212), // Deep Dark Background
+      backgroundColor: const Color(0xFFF5F5F7),
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: const Color(0xFF1E1E1E),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF2E3192), Color(0xFF1BFFFF)],
+            ),
+          ),
+        ),
         title: Text(
           'Admin Console',
           style: GoogleFonts.poppins(
@@ -28,7 +37,17 @@ class AdminHomeScreen extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout_rounded, color: Colors.white70),
+            icon: const Icon(Icons.person_add_alt_1, color: Colors.white),
+            tooltip: 'Add New Admin',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const CreateAdminScreen()),
+              );
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.logout_rounded, color: Colors.white),
             onPressed: () {
               provider.logout();
               Navigator.of(context).pushAndRemoveUntil(
@@ -39,27 +58,42 @@ class AdminHomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.of(
-            context,
-          ).push(MaterialPageRoute(builder: (_) => const AddEventScreen()));
-        },
-        backgroundColor: const Color(0xFFE53935), // Red Accent
-        foregroundColor: Colors.white,
-        icon: const Icon(Icons.add),
-        label: Text(
-          'NEW EVENT',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+      floatingActionButton: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(30),
+          gradient: const LinearGradient(
+            colors: [Color(0xFF2E3192), Color(0xFF1BFFFF)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: FloatingActionButton.extended(
+          onPressed: () {
+            Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (_) => const AddEventScreen()));
+          },
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          foregroundColor: Colors.white,
+          icon: const Icon(Icons.add),
+          label: Text(
+            'NEW EVENT',
+            style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+          ),
         ),
       ),
       body: Column(
         children: [
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.fromLTRB(20, 10, 20, 30),
             decoration: const BoxDecoration(
-              color: Color(0xFF1E1E1E),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFF2E3192), Color(0xFF1BFFFF)],
+              ),
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(30),
                 bottomRight: Radius.circular(30),
@@ -79,7 +113,7 @@ class AdminHomeScreen extends StatelessWidget {
                 Text(
                   'Tap an event to edit details',
                   style: GoogleFonts.poppins(
-                    color: Colors.white38,
+                    color: Colors.white70,
                     fontSize: 14,
                   ),
                 ),
@@ -95,12 +129,12 @@ class AdminHomeScreen extends StatelessWidget {
                         Icon(
                           Icons.dashboard_customize,
                           size: 80,
-                          color: Colors.white12,
+                          color: Colors.grey[300],
                         ),
                         const SizedBox(height: 16),
                         Text(
                           'No active events',
-                          style: GoogleFonts.poppins(color: Colors.white38),
+                          style: GoogleFonts.poppins(color: Colors.grey[500]),
                         ),
                       ],
                     ),
@@ -113,12 +147,11 @@ class AdminHomeScreen extends StatelessWidget {
                       return Container(
                         margin: const EdgeInsets.only(bottom: 16),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF2C2C2C), // Dark Card
+                          color: Colors.white,
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: Colors.white10),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.3),
+                              color: Colors.black.withValues(alpha: 0.05),
                               blurRadius: 10,
                               offset: const Offset(0, 4),
                             ),
@@ -145,14 +178,9 @@ class AdminHomeScreen extends StatelessWidget {
                                   ),
                                   decoration: BoxDecoration(
                                     color: const Color(
-                                      0xFFE53935,
+                                      0xFF2E3192,
                                     ).withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(
-                                      color: const Color(
-                                        0xFFE53935,
-                                      ).withValues(alpha: 0.3),
-                                    ),
                                   ),
                                   child: Column(
                                     children: [
@@ -161,14 +189,14 @@ class AdminHomeScreen extends StatelessWidget {
                                         style: GoogleFonts.poppins(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 20,
-                                          color: const Color(0xFFE53935),
+                                          color: const Color(0xFF2E3192),
                                         ),
                                       ),
                                       Text(
                                         DateFormat('MMM').format(event.date),
                                         style: GoogleFonts.poppins(
                                           fontWeight: FontWeight.w600,
-                                          color: const Color(0xFFE53935),
+                                          color: const Color(0xFF2E3192),
                                         ),
                                       ),
                                     ],
@@ -185,49 +213,24 @@ class AdminHomeScreen extends StatelessWidget {
                                         style: GoogleFonts.poppins(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16,
-                                          color: Colors.white,
+                                          color: const Color(0xFF2E3192),
                                         ),
                                       ),
-                                      const SizedBox(height: 6),
-                                      Row(
-                                        children: [
-                                          Icon(
-                                            Icons.location_on,
-                                            size: 14,
-                                            color: Colors.white38,
-                                          ),
-                                          const SizedBox(width: 4),
-                                          Text(
-                                            event.location,
-                                            style: GoogleFonts.poppins(
-                                              color: Colors.white60,
-                                              fontSize: 13,
-                                            ),
-                                          ),
-                                        ],
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        event.location,
+                                        style: GoogleFonts.poppins(
+                                          color: Colors.grey[600],
+                                          fontSize: 13,
+                                        ),
                                       ),
-                                      const SizedBox(height: 8),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 10,
-                                          vertical: 4,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: Colors.orange.withValues(
-                                            alpha: 0.1,
-                                          ),
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                        ),
-                                        child: Text(
-                                          event.category.toUpperCase(),
-                                          style: GoogleFonts.poppins(
-                                            color: Colors.orangeAccent,
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.bold,
-                                            letterSpacing: 0.5,
-                                          ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        event.category,
+                                        style: GoogleFonts.poppins(
+                                          color: const Color(0xFF2E3192),
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600,
                                         ),
                                       ),
                                     ],
@@ -236,7 +239,7 @@ class AdminHomeScreen extends StatelessWidget {
                                 IconButton(
                                   icon: const Icon(
                                     Icons.delete_outline,
-                                    color: Colors.white38,
+                                    color: Colors.red,
                                   ),
                                   onPressed: () =>
                                       provider.deleteEvent(event.id),

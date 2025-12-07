@@ -54,7 +54,7 @@ class _StudentLoginScreenState extends State<StudentLoginScreen> {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color(0xFF6A11CB), Color(0xFF2575FC)],
+            colors: [Color(0xFF2E3192), Color(0xFF1BFFFF)],
           ),
         ),
         child: Center(
@@ -76,13 +76,13 @@ class _StudentLoginScreenState extends State<StudentLoginScreen> {
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF6A11CB).withValues(alpha: 0.1),
+                          color: const Color(0xFF2E3192).withValues(alpha: 0.1),
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(
                           Icons.school_rounded,
                           size: 50,
-                          color: Color(0xFF6A11CB),
+                          color: Color(0xFF2E3192),
                         ),
                       ),
                       const SizedBox(height: 24),
@@ -91,7 +91,7 @@ class _StudentLoginScreenState extends State<StudentLoginScreen> {
                         style: GoogleFonts.poppins(
                           fontSize: 26,
                           fontWeight: FontWeight.bold,
-                          color: const Color(0xFF6A11CB),
+                          color: const Color(0xFF2E3192),
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -113,7 +113,7 @@ class _StudentLoginScreenState extends State<StudentLoginScreen> {
                           ),
                           prefixIcon: const Icon(
                             Icons.person_outline,
-                            color: Color(0xFF6A11CB),
+                            color: Color(0xFF2E3192),
                           ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
@@ -122,7 +122,7 @@ class _StudentLoginScreenState extends State<StudentLoginScreen> {
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
                             borderSide: const BorderSide(
-                              color: Color(0xFF6A11CB),
+                              color: Color(0xFF2E3192),
                               width: 2,
                             ),
                           ),
@@ -143,7 +143,7 @@ class _StudentLoginScreenState extends State<StudentLoginScreen> {
                           ),
                           prefixIcon: const Icon(
                             Icons.lock_outline,
-                            color: Color(0xFF6A11CB),
+                            color: Color(0xFF2E3192),
                           ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
@@ -152,7 +152,7 @@ class _StudentLoginScreenState extends State<StudentLoginScreen> {
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
                             borderSide: const BorderSide(
-                              color: Color(0xFF6A11CB),
+                              color: Color(0xFF2E3192),
                               width: 2,
                             ),
                           ),
@@ -168,7 +168,7 @@ class _StudentLoginScreenState extends State<StudentLoginScreen> {
                         child: ElevatedButton(
                           onPressed: _login,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF6A11CB),
+                            backgroundColor: const Color(0xFF2E3192),
                             foregroundColor: Colors.white,
                             elevation: 5,
                             shape: RoundedRectangleBorder(
@@ -206,7 +206,7 @@ class _StudentLoginScreenState extends State<StudentLoginScreen> {
                               'Create Account',
                               style: GoogleFonts.poppins(
                                 fontWeight: FontWeight.bold,
-                                color: const Color(0xFF6A11CB),
+                                color: const Color(0xFF2E3192),
                               ),
                             ),
                           ),

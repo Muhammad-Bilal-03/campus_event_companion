@@ -14,7 +14,6 @@ class _SignupScreenState extends State<SignupScreen> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  bool _isAdmin = false;
   final _formKey = GlobalKey<FormState>();
 
   void _signup() {
@@ -23,17 +22,17 @@ class _SignupScreenState extends State<SignupScreen> {
       final success = provider.signUp(
         _usernameController.text,
         _passwordController.text,
-        _isAdmin,
+        false,
       );
 
       if (success) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Account Created! Please Login.',
+              'Student Account Created! Please Login.',
               style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
             ),
-            backgroundColor: Colors.green,
+            backgroundColor: const Color(0xFF2E3192),
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -61,7 +60,7 @@ class _SignupScreenState extends State<SignupScreen> {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color(0xFF6A11CB), Color(0xFF2575FC)],
+            colors: [Color(0xFF2E3192), Color(0xFF1BFFFF)],
           ),
         ),
         child: Center(
@@ -91,11 +90,11 @@ class _SignupScreenState extends State<SignupScreen> {
                                 style: GoogleFonts.poppins(
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
-                                  color: const Color(0xFF6A11CB),
+                                  color: const Color(0xFF2E3192),
                                 ),
                               ),
                               Text(
-                                'Create your account',
+                                'Student Registration',
                                 style: GoogleFonts.poppins(
                                   fontSize: 14,
                                   color: Colors.grey[600],
@@ -107,13 +106,13 @@ class _SignupScreenState extends State<SignupScreen> {
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
                               color: const Color(
-                                0xFF6A11CB,
+                                0xFF2E3192,
                               ).withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: const Icon(
                               Icons.person_add_alt_1,
-                              color: Color(0xFF6A11CB),
+                              color: Color(0xFF2E3192),
                               size: 28,
                             ),
                           ),
@@ -130,7 +129,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           ),
                           prefixIcon: const Icon(
                             Icons.person_outline,
-                            color: Color(0xFF6A11CB),
+                            color: Color(0xFF2E3192),
                           ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
@@ -139,7 +138,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
                             borderSide: const BorderSide(
-                              color: Color(0xFF6A11CB),
+                              color: Color(0xFF2E3192),
                               width: 2,
                             ),
                           ),
@@ -160,7 +159,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           ),
                           prefixIcon: const Icon(
                             Icons.lock_outline,
-                            color: Color(0xFF6A11CB),
+                            color: Color(0xFF2E3192),
                           ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
@@ -169,7 +168,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
                             borderSide: const BorderSide(
-                              color: Color(0xFF6A11CB),
+                              color: Color(0xFF2E3192),
                               width: 2,
                             ),
                           ),
@@ -188,10 +187,9 @@ class _SignupScreenState extends State<SignupScreen> {
                           labelStyle: GoogleFonts.poppins(
                             color: Colors.grey[700],
                           ),
-                          // CHANGED: Using a valid icon here
                           prefixIcon: const Icon(
                             Icons.verified_user_outlined,
-                            color: Color(0xFF6A11CB),
+                            color: Color(0xFF2E3192),
                           ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
@@ -200,7 +198,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
                             borderSide: const BorderSide(
-                              color: Color(0xFF6A11CB),
+                              color: Color(0xFF2E3192),
                               width: 2,
                             ),
                           ),
@@ -211,46 +209,6 @@ class _SignupScreenState extends State<SignupScreen> {
                             ? 'Passwords do not match'
                             : null,
                       ),
-                      const SizedBox(height: 20),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          color: _isAdmin
-                              ? Colors.redAccent.withValues(alpha: 0.1)
-                              : const Color(0xFF6A11CB).withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(
-                            color: _isAdmin
-                                ? Colors.redAccent
-                                : const Color(0xFF6A11CB),
-                            width: 1,
-                          ),
-                        ),
-                        child: SwitchListTile(
-                          title: Text(
-                            _isAdmin
-                                ? 'Registering as Admin'
-                                : 'Registering as Student',
-                            style: GoogleFonts.poppins(
-                              fontWeight: FontWeight.bold,
-                              color: _isAdmin
-                                  ? Colors.redAccent
-                                  : const Color(0xFF6A11CB),
-                              fontSize: 14,
-                            ),
-                          ),
-                          value: _isAdmin,
-                          activeThumbColor: Colors.redAccent,
-                          inactiveThumbColor: const Color(0xFF6A11CB),
-                          inactiveTrackColor: const Color(
-                            0xFF6A11CB,
-                          ).withValues(alpha: 0.3),
-                          onChanged: (val) => setState(() => _isAdmin = val),
-                        ),
-                      ),
                       const SizedBox(height: 32),
                       SizedBox(
                         width: double.infinity,
@@ -258,7 +216,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         child: ElevatedButton(
                           onPressed: _signup,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF6A11CB),
+                            backgroundColor: const Color(0xFF2E3192),
                             foregroundColor: Colors.white,
                             elevation: 5,
                             shape: RoundedRectangleBorder(
