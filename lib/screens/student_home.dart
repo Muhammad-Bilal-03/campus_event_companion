@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../providers/app_provider.dart';
 import '../providers/theme_provider.dart';
 import '../utils/constants.dart';
-import '../widgets/event_card.dart'; // Import the new widget
+import '../widgets/event_card.dart';
 import 'welcome_screen.dart';
 import 'calendar_screen.dart';
 
@@ -13,8 +13,6 @@ class StudentHomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Access providers
-    // We use listen: false for actions, and Consumer for rebuilding UI
     final themeProvider = Provider.of<ThemeProvider>(context);
     final isDark = themeProvider.isDarkMode;
 
@@ -22,15 +20,10 @@ class StudentHomeScreen extends StatelessWidget {
       appBar: _buildAppBar(context, themeProvider, isDark),
       body: Column(
         children: [
-          // Extracted Header Area
           _buildHeader(context, isDark),
-
-          // Extracted List Area
           Expanded(
             child: Consumer<AppProvider>(
               builder: (context, provider, child) {
-                // Notice: logic is now in the Provider getter 'filteredEvents'
-                // This keeps the build method CLEAN.
                 final events = provider.filteredEvents;
 
                 if (events.isEmpty) {
@@ -107,7 +100,10 @@ class StudentHomeScreen extends StatelessWidget {
         IconButton(
           icon: const Icon(Icons.logout_rounded, color: Colors.white),
           onPressed: () {
+            // Updated Logout: Reset theme + Logout
+            Provider.of<ThemeProvider>(context, listen: false).resetTheme();
             Provider.of<AppProvider>(context, listen: false).logout();
+
             Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(builder: (_) => const WelcomeScreen()),
               (route) => false,
@@ -143,7 +139,6 @@ class StudentHomeScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          // Search Bar
           Consumer<AppProvider>(
             builder: (context, provider, _) {
               return TextField(
@@ -170,7 +165,6 @@ class StudentHomeScreen extends StatelessWidget {
             },
           ),
           const SizedBox(height: 16),
-          // Category Chips
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Consumer<AppProvider>(
@@ -178,12 +172,9 @@ class StudentHomeScreen extends StatelessWidget {
                 return Row(
                   children: provider.categories.map((category) {
                     final isSelected = provider.selectedCategory == category;
-                    // Simplify logic for chip colors
                     final chipBg = isSelected
                         ? (isDark ? AppColors.primary : Colors.white)
-                        : (isDark
-                              ? Colors.grey[800]!
-                              : Colors.white.withValues(alpha: 0.2));
+                        : (isDark ? Colors.grey[800]! : Colors.grey);
                     final chipText = isSelected
                         ? (isDark ? Colors.white : AppColors.primary)
                         : Colors.white;

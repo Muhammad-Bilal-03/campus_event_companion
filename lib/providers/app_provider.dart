@@ -19,16 +19,12 @@ class AppProvider with ChangeNotifier {
   User? get currentUser => _currentUser;
   bool get isAdmin => _currentUser?.isAdmin ?? false;
   String get selectedCategory => _selectedCategory;
-
-  // FIX 1: Expose the raw list of events for Admin & Calendar
   List<Event> get events => _events;
 
-  // --- OPTIMIZED FILTERING LOGIC ---
   List<Event> get filteredEvents {
     if (_searchQuery.isEmpty && _selectedCategory == "All") {
       return _events;
     }
-
     return _events.where((event) {
       final matchesSearch =
           event.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
@@ -40,14 +36,13 @@ class AppProvider with ChangeNotifier {
   }
 
   List<String> get categories {
-    // FIX 2: Removed unnecessary .toList() inside spread
     return ["All", ..._events.map((e) => e.category).toSet()];
   }
 
   Future<void> init() async {
     await Hive.initFlutter();
-    Hive.registerAdapter(EventAdapter());
-    Hive.registerAdapter(UserAdapter());
+    if (!Hive.isAdapterRegistered(0)) Hive.registerAdapter(EventAdapter());
+    if (!Hive.isAdapterRegistered(1)) Hive.registerAdapter(UserAdapter());
 
     _eventBox = await Hive.openBox<Event>('events');
     _userBox = await Hive.openBox<User>('users');
@@ -124,20 +119,39 @@ class AppProvider with ChangeNotifier {
     _loadEvents();
   }
 
-  Future<void> updateParticipationStatus(String id, String status) async {
+  // UPDATED: Handle Seat Logic and return success bool
+  Future<bool> updateParticipationStatus(String id, String newStatus) async {
     final event = _eventBox!.get(id);
     if (event != null) {
-      event.participationStatus = status;
+      final oldStatus = event.participationStatus;
+
+      // Logic: If moving TO 'Going', increment seat.
+      // If moving FROM 'Going', decrement seat.
+
+      if (newStatus == 'Going' && oldStatus != 'Going') {
+        // Check availability
+        if (event.totalSeats != null && event.seatsTaken >= event.totalSeats!) {
+          return false; // Event is full
+        }
+        event.seatsTaken++;
+      } else if (newStatus != 'Going' && oldStatus == 'Going') {
+        // Release seat
+        if (event.seatsTaken > 0) event.seatsTaken--;
+      }
+
+      event.participationStatus = newStatus;
       await event.save();
 
-      if (status == 'Interested' || status == 'Going') {
+      if (newStatus == 'Interested' || newStatus == 'Going') {
         NotificationService.showNotification(
           id: event.id.hashCode,
           title: 'Status Updated',
-          body: 'You are marked as "$status" for ${event.title}',
+          body: 'You are marked as "$newStatus" for ${event.title}',
         );
       }
       _loadEvents();
+      return true;
     }
+    return false;
   }
 }

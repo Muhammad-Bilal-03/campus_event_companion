@@ -6,7 +6,7 @@ import 'package:uuid/uuid.dart';
 
 import '../models/event_model.dart';
 import '../providers/app_provider.dart';
-import '../utils/constants.dart'; // Import constants
+import '../utils/constants.dart';
 
 class AddEventScreen extends StatefulWidget {
   final Event? event;
@@ -23,6 +23,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
   final _locationController = TextEditingController();
   final _categoryController = TextEditingController();
   final _linkController = TextEditingController();
+  final _seatsController = TextEditingController(); // New Controller
   DateTime _selectedDate = DateTime.now();
   final _formKey = GlobalKey<FormState>();
 
@@ -35,12 +36,20 @@ class _AddEventScreenState extends State<AddEventScreen> {
       _locationController.text = widget.event!.location;
       _categoryController.text = widget.event!.category;
       _linkController.text = widget.event!.linkUrl ?? '';
+      // New: Load seats
+      _seatsController.text = widget.event!.totalSeats?.toString() ?? '';
       _selectedDate = widget.event!.date;
     }
   }
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
+      // New: Parse seats
+      int? seats;
+      if (_seatsController.text.isNotEmpty) {
+        seats = int.tryParse(_seatsController.text);
+      }
+
       final event = Event(
         id: widget.event?.id ?? const Uuid().v4(),
         title: _titleController.text,
@@ -50,6 +59,8 @@ class _AddEventScreenState extends State<AddEventScreen> {
         category: _categoryController.text,
         participationStatus: widget.event?.participationStatus ?? 'None',
         linkUrl: _linkController.text.isNotEmpty ? _linkController.text : null,
+        totalSeats: seats, // Save seats
+        seatsTaken: widget.event?.seatsTaken ?? 0,
       );
 
       Provider.of<AppProvider>(context, listen: false).addEvent(event);
@@ -67,7 +78,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.light(
-              primary: AppColors.primary, // Used constant
+              primary: AppColors.primary,
               onPrimary: Colors.white,
               onSurface: Colors.black,
             ),
@@ -173,6 +184,15 @@ class _AddEventScreenState extends State<AddEventScreen> {
                           ],
                         ),
                         const SizedBox(height: 16),
+                        // New: Seats Input
+                        _buildTextField(
+                          _seatsController,
+                          'Available Seats (Optional)',
+                          Icons.event_seat,
+                          isRequired: false,
+                          isNumber: true,
+                        ),
+                        const SizedBox(height: 16),
                         _buildTextField(
                           _linkController,
                           'Link (Optional)',
@@ -218,10 +238,12 @@ class _AddEventScreenState extends State<AddEventScreen> {
     IconData icon, {
     int maxLines = 1,
     bool isRequired = true,
+    bool isNumber = false,
   }) {
     return TextFormField(
       controller: controller,
       maxLines: maxLines,
+      keyboardType: isNumber ? TextInputType.number : TextInputType.text,
       style: GoogleFonts.poppins(),
       decoration: InputDecoration(
         labelText: label,

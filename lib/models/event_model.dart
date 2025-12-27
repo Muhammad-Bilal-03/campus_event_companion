@@ -28,6 +28,12 @@ class Event extends HiveObject {
   @HiveField(7)
   final String? linkUrl; // Nullable URL for external resources
 
+  @HiveField(8)
+  final int? totalSeats; // New: Optional limit on seats
+
+  @HiveField(9)
+  int seatsTaken; // New: Track occupied seats
+
   Event({
     required this.id,
     required this.title,
@@ -37,5 +43,7 @@ class Event extends HiveObject {
     required this.category,
     this.participationStatus = 'None',
     this.linkUrl,
+    this.totalSeats,
+    this.seatsTaken = 0,
   });
 }

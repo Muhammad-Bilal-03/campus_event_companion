@@ -12,4 +12,10 @@ class ThemeProvider with ChangeNotifier {
         : ThemeMode.light;
     notifyListeners();
   }
+
+  // New: Reset to default light mode (called on Logout)
+  void resetTheme() {
+    _themeMode = ThemeMode.light;
+    notifyListeners();
+  }
 }

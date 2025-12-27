@@ -30,6 +30,20 @@ class EventCard extends StatelessWidget {
       statusIndicator = Icon(icon, color: color, size: 28);
     }
 
+    // Seat Logic for UI
+    String? seatInfo;
+    Color seatColor = Colors.grey;
+    if (event.totalSeats != null) {
+      int remaining = event.totalSeats! - event.seatsTaken;
+      if (remaining <= 0) {
+        seatInfo = "FULL";
+        seatColor = Colors.red;
+      } else {
+        seatInfo = "$remaining seats";
+        seatColor = AppColors.primary;
+      }
+    }
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
@@ -123,23 +137,38 @@ class EventCard extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        event.category.toUpperCase(),
-                        style: GoogleFonts.poppins(
-                          color: AppColors.primary,
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            event.category.toUpperCase(),
+                            style: GoogleFonts.poppins(
+                              color: AppColors.primary,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
-                      ),
+                        if (seatInfo != null) ...[
+                          const SizedBox(width: 8),
+                          Text(
+                            seatInfo,
+                            style: GoogleFonts.poppins(
+                              color: seatColor,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
                   ],
                 ),

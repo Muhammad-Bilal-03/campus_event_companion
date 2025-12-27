@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../providers/app_provider.dart';
-import '../providers/theme_provider.dart'; // FIX 1: Import ThemeProvider
+import '../providers/theme_provider.dart';
 import '../utils/constants.dart';
 import '../widgets/event_card.dart';
 import 'add_event_screen.dart';
@@ -15,12 +15,8 @@ class AdminHomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<AppProvider>(context);
-    // FIX 2: Listen to ThemeProvider for toggling
     final themeProvider = Provider.of<ThemeProvider>(context);
-
-    // FIX 3: This works now because we added the getter back to AppProvider
     final events = provider.events;
-
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
@@ -40,7 +36,6 @@ class AdminHomeScreen extends StatelessWidget {
           IconButton(
             icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
             tooltip: "Switch Theme",
-            // FIX 4: Call toggleTheme on the correct provider
             onPressed: () => themeProvider.toggleTheme(),
           ),
           IconButton(
@@ -56,7 +51,10 @@ class AdminHomeScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
+              // Updated Logout: Reset theme + Logout
+              themeProvider.resetTheme();
               provider.logout();
+
               Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (_) => const WelcomeScreen()),
                 (route) => false,
@@ -139,7 +137,6 @@ class AdminHomeScreen extends StatelessWidget {
                     itemCount: events.length,
                     itemBuilder: (context, index) {
                       final event = events[index];
-                      // Reusing the upgraded EventCard
                       return EventCard(
                         event: event,
                         onTap: () => Navigator.push(

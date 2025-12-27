@@ -13,7 +13,13 @@ class EventDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Re-access event from provider to get live updates on seats
     final provider = Provider.of<AppProvider>(context);
+    final liveEvent = provider.events.firstWhere(
+      (e) => e.id == event.id,
+      orElse: () => event,
+    );
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
@@ -72,31 +78,73 @@ class EventDetailsScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF2E3192).withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      event.category.toUpperCase(),
-                      style: GoogleFonts.poppins(
-                        color: isDark ? Colors.white : const Color(0xFF2E3192),
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF2E3192).withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          liveEvent.category.toUpperCase(),
+                          style: GoogleFonts.poppins(
+                            color: isDark
+                                ? Colors.white
+                                : const Color(0xFF2E3192),
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1,
+                          ),
+                        ),
                       ),
-                    ),
+                      // New: Seats Indicator
+                      if (liveEvent.totalSeats != null)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color:
+                                (liveEvent.seatsTaken >= liveEvent.totalSeats!)
+                                ? Colors.red.withValues(alpha: 0.1)
+                                : Colors.green.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color:
+                                  (liveEvent.seatsTaken >=
+                                      liveEvent.totalSeats!)
+                                  ? Colors.red
+                                  : Colors.green,
+                            ),
+                          ),
+                          child: Text(
+                            (liveEvent.seatsTaken >= liveEvent.totalSeats!)
+                                ? "FULL"
+                                : "${liveEvent.totalSeats! - liveEvent.seatsTaken} seats left",
+                            style: GoogleFonts.poppins(
+                              color:
+                                  (liveEvent.seatsTaken >=
+                                      liveEvent.totalSeats!)
+                                  ? Colors.red
+                                  : Colors.green,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    event.title,
+                    liveEvent.title,
                     style: GoogleFonts.poppins(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
-                      // Dynamic color: White in dark mode, Blue in light mode
                       color: isDark ? Colors.white : const Color(0xFF2E3192),
                     ),
                   ),
@@ -130,7 +178,7 @@ class EventDetailsScreen extends StatelessWidget {
                             _buildStatusOption(
                               context,
                               provider,
-                              event,
+                              liveEvent,
                               'None',
                               Icons.cancel_outlined,
                               isDark,
@@ -138,7 +186,7 @@ class EventDetailsScreen extends StatelessWidget {
                             _buildStatusOption(
                               context,
                               provider,
-                              event,
+                              liveEvent,
                               'Interested',
                               Icons.star_outline,
                               isDark,
@@ -146,7 +194,7 @@ class EventDetailsScreen extends StatelessWidget {
                             _buildStatusOption(
                               context,
                               provider,
-                              event,
+                              liveEvent,
                               'Going',
                               Icons.check_circle_outline,
                               isDark,
@@ -161,18 +209,19 @@ class EventDetailsScreen extends StatelessWidget {
                   _buildInfoRow(
                     Icons.calendar_today,
                     'Date',
-                    DateFormat('EEEE, MMMM d, yyyy').format(event.date),
+                    DateFormat('EEEE, MMMM d, yyyy').format(liveEvent.date),
                     isDark,
                   ),
                   const SizedBox(height: 20),
                   _buildInfoRow(
                     Icons.location_on,
                     'Location',
-                    event.location,
+                    liveEvent.location,
                     isDark,
                   ),
 
-                  if (event.linkUrl != null && event.linkUrl!.isNotEmpty) ...[
+                  if (liveEvent.linkUrl != null &&
+                      liveEvent.linkUrl!.isNotEmpty) ...[
                     const SizedBox(height: 24),
                     SizedBox(
                       width: double.infinity,
@@ -183,7 +232,7 @@ class EventDetailsScreen extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                               builder: (_) =>
-                                  WebViewScreen(url: event.linkUrl!),
+                                  WebViewScreen(url: liveEvent.linkUrl!),
                             ),
                           );
                         },
@@ -214,7 +263,7 @@ class EventDetailsScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    event.description,
+                    liveEvent.description,
                     style: GoogleFonts.poppins(
                       fontSize: 15,
                       color: isDark ? Colors.grey[300] : Colors.grey[700],
@@ -244,25 +293,59 @@ class EventDetailsScreen extends StatelessWidget {
         ? (isDark ? Colors.white : const Color(0xFF2E3192))
         : Colors.grey;
 
+    // Logic to disable "Going" if full and not already going
+    bool isFull = false;
+    if (value == 'Going' &&
+        event.participationStatus != 'Going' &&
+        event.totalSeats != null) {
+      if (event.seatsTaken >= event.totalSeats!) {
+        isFull = true;
+      }
+    }
+
     return InkWell(
-      onTap: () => provider.updateParticipationStatus(event.id, value),
-      child: Column(
-        children: [
-          Icon(
-            isSelected ? _getFilledIcon(icon) : icon,
-            color: color,
-            size: 30,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: GoogleFonts.poppins(
+      onTap: isFull
+          ? () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Sorry, this event is full!')),
+              );
+            }
+          : () async {
+              bool success = await provider.updateParticipationStatus(
+                event.id,
+                value,
+              );
+              if (!success && value == 'Going') {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Sorry, this event is full!')),
+                );
+              }
+            },
+      child: Opacity(
+        opacity: isFull ? 0.4 : 1.0,
+        child: Column(
+          children: [
+            Icon(
+              isSelected ? _getFilledIcon(icon) : icon,
               color: color,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-              fontSize: 12,
+              size: 30,
             ),
-          ),
-        ],
+            const SizedBox(height: 4),
+            Text(
+              value,
+              style: GoogleFonts.poppins(
+                color: color,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                fontSize: 12,
+              ),
+            ),
+            if (isFull)
+              Text(
+                '(Full)',
+                style: GoogleFonts.poppins(color: Colors.red, fontSize: 10),
+              ),
+          ],
+        ),
       ),
     );
   }
