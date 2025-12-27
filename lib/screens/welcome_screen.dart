@@ -58,7 +58,7 @@ class WelcomeScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 40),
                           Text(
-                            'Campus Event\nCompanion',
+                            'Campus Pulse',
                             textAlign: TextAlign.center,
                             style: GoogleFonts.poppins(
                               fontSize: 32,
