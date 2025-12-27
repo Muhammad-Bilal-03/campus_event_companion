@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../utils/constants.dart';
 import 'student_login.dart';
 import 'admin_login.dart';
 
@@ -10,98 +11,118 @@ class WelcomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+        height: double.infinity,
+        width: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color(0xFF2E3192), Color(0xFF1BFFFF)],
+            colors: AppConstants.gradientColors,
           ),
         ),
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Spacer(),
-                Container(
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.15),
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white30, width: 2),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
-                        blurRadius: 20,
-                        spreadRadius: 5,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: IntrinsicHeight(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Spacer(),
+                          Container(
+                            padding: const EdgeInsets.all(24),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.15),
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Colors.white30,
+                                width: 2,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.1),
+                                  blurRadius: 20,
+                                  spreadRadius: 5,
+                                ),
+                              ],
+                            ),
+                            child: const Icon(
+                              Icons.school_rounded,
+                              size: 80,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 40),
+                          Text(
+                            'Campus Event\nCompanion',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.poppins(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              height: 1.2,
+                              shadows: [
+                                Shadow(
+                                  color: Colors.black.withValues(alpha: 0.3),
+                                  offset: const Offset(0, 4),
+                                  blurRadius: 10,
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Your digital guide to university life.\nNever miss a moment.',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              color: Colors.white.withValues(alpha: 0.9),
+                              height: 1.5,
+                            ),
+                          ),
+                          const Spacer(),
+                          _buildRoleButton(
+                            context,
+                            label: 'I am a Student',
+                            icon: Icons.person,
+                            backgroundColor: Colors.white,
+                            textColor: const Color(0xFF2E3192),
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const StudentLoginScreen(),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          _buildRoleButton(
+                            context,
+                            label: 'I am an Admin',
+                            icon: Icons.admin_panel_settings,
+                            backgroundColor: Colors.black.withValues(
+                              alpha: 0.25,
+                            ),
+                            textColor: Colors.white,
+                            isOutlined: true,
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const AdminLoginScreen(),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 50),
+                        ],
                       ),
-                    ],
-                  ),
-                  child: const Icon(
-                    Icons.school_rounded,
-                    size: 80,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 40),
-                Text(
-                  'Campus Event\nCompanion',
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    height: 1.2,
-                    shadows: [
-                      Shadow(
-                        color: Colors.black.withValues(alpha: 0.3),
-                        offset: const Offset(0, 4),
-                        blurRadius: 10,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'Your digital guide to university life.\nNever miss a moment.',
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    color: Colors.white.withValues(alpha: 0.9),
-                    height: 1.5,
-                  ),
-                ),
-                const Spacer(),
-                _buildRoleButton(
-                  context,
-                  label: 'I am a Student',
-                  icon: Icons.person,
-                  backgroundColor: Colors.white,
-                  textColor: const Color(0xFF2E3192),
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const StudentLoginScreen(),
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
-                _buildRoleButton(
-                  context,
-                  label: 'I am an Admin',
-                  icon: Icons.admin_panel_settings,
-                  backgroundColor: Colors.black.withValues(alpha: 0.25),
-                  textColor: Colors.white,
-                  isOutlined: true,
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const AdminLoginScreen()),
-                  ),
-                ),
-                const SizedBox(height: 50),
-              ],
-            ),
+              );
+            },
           ),
         ),
       ),

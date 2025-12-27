@@ -1,352 +1,216 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../providers/app_provider.dart';
+import '../providers/theme_provider.dart';
+import '../utils/constants.dart';
+import '../widgets/event_card.dart'; // Import the new widget
 import 'welcome_screen.dart';
-import 'event_details_screen.dart';
 import 'calendar_screen.dart';
-import 'settings_screen.dart';
 
-class StudentHomeScreen extends StatefulWidget {
+class StudentHomeScreen extends StatelessWidget {
   const StudentHomeScreen({super.key});
 
   @override
-  State<StudentHomeScreen> createState() => _StudentHomeScreenState();
-}
-
-class _StudentHomeScreenState extends State<StudentHomeScreen> {
-  String _searchQuery = "";
-  String _selectedCategory = "All";
-
-  @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<AppProvider>(context);
-    final allEvents = provider.events;
-
-    final categories = [
-      "All",
-      ...allEvents.map((e) => e.category).toSet().toList(),
-    ];
-
-    final events = allEvents.where((event) {
-      final matchesSearch =
-          event.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          event.location.toLowerCase().contains(_searchQuery.toLowerCase());
-      final matchesCategory =
-          _selectedCategory == "All" || event.category == _selectedCategory;
-
-      return matchesSearch && matchesCategory;
-    }).toList();
+    // Access providers
+    // We use listen: false for actions, and Consumer for rebuilding UI
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDark = themeProvider.isDarkMode;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppBar(
-        elevation: 0,
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFF2E3192), Color(0xFF1BFFFF)],
-            ),
-          ),
-        ),
-        title: Text(
-          'Student Dashboard',
-          style: GoogleFonts.poppins(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings, color: Colors.white),
-            tooltip: "Settings",
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const SettingsScreen()),
-              );
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.calendar_month, color: Colors.white),
-            tooltip: "Calendar View",
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const CalendarScreen()),
-              );
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.logout_rounded, color: Colors.white),
-            onPressed: () {
-              provider.logout();
-              Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (_) => const WelcomeScreen()),
-                (route) => false,
-              );
-            },
-          ),
-        ],
-      ),
+      appBar: _buildAppBar(context, themeProvider, isDark),
       body: Column(
         children: [
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Color(0xFF2E3192), Color(0xFF1BFFFF)],
-              ),
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(30),
-                bottomRight: Radius.circular(30),
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'My Campus Feed',
-                  style: GoogleFonts.poppins(
-                    color: Colors.white,
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  onChanged: (value) => setState(() => _searchQuery = value),
-                  style: GoogleFonts.poppins(),
-                  decoration: InputDecoration(
-                    hintText: 'Search events...',
-                    hintStyle: GoogleFonts.poppins(color: Colors.grey[400]),
-                    prefixIcon: const Icon(
-                      Icons.search,
-                      color: Color(0xFF2E3192),
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide.none,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: categories.map((category) {
-                      final isSelected = _selectedCategory == category;
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: ChoiceChip(
-                          label: Text(category),
-                          selected: isSelected,
-                          onSelected: (selected) {
-                            setState(() {
-                              _selectedCategory = category;
-                            });
-                          },
-                          selectedColor: Colors.white,
-                          backgroundColor: Colors.white.withValues(alpha: 0.2),
-                          labelStyle: GoogleFonts.poppins(
-                            color: isSelected
-                                ? const Color(0xFF2E3192)
-                                : Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          checkmarkColor: const Color(0xFF2E3192),
-                          side: BorderSide.none,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          // Extracted Header Area
+          _buildHeader(context, isDark),
+
+          // Extracted List Area
           Expanded(
-            child: events.isEmpty
-                ? Center(
+            child: Consumer<AppProvider>(
+              builder: (context, provider, child) {
+                // Notice: logic is now in the Provider getter 'filteredEvents'
+                // This keeps the build method CLEAN.
+                final events = provider.filteredEvents;
+
+                if (events.isEmpty) {
+                  return Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.event_busy,
                           size: 80,
-                          color: Colors.grey[300],
+                          color: Colors.grey,
                         ),
                         const SizedBox(height: 16),
                         Text(
                           'No events found',
-                          style: GoogleFonts.poppins(color: Colors.grey[500]),
+                          style: GoogleFonts.poppins(color: Colors.grey),
                         ),
                       ],
                     ),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: events.length,
-                    itemBuilder: (context, index) {
-                      final event = events[index];
+                  );
+                }
 
-                      // Status Logic
-                      IconData statusIcon = Icons.circle_outlined;
-                      Color statusColor = Colors.grey;
+                return ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: events.length,
+                  itemBuilder: (context, index) {
+                    return EventCard(event: events[index]);
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-                      if (event.participationStatus == 'Going') {
-                        statusIcon = Icons.check_circle;
-                        statusColor = Colors.green;
-                      } else if (event.participationStatus == 'Interested') {
-                        statusIcon = Icons.star;
-                        statusColor = Colors.amber;
-                      }
+  AppBar _buildAppBar(
+    BuildContext context,
+    ThemeProvider themeProvider,
+    bool isDark,
+  ) {
+    return AppBar(
+      elevation: 0,
+      flexibleSpace: isDark
+          ? null
+          : Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(colors: AppConstants.gradientColors),
+              ),
+            ),
+      title: Text(
+        'Student Dashboard',
+        style: GoogleFonts.poppins(
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+      actions: [
+        IconButton(
+          icon: Icon(
+            isDark ? Icons.light_mode : Icons.dark_mode,
+            color: Colors.white,
+          ),
+          onPressed: () => themeProvider.toggleTheme(),
+        ),
+        IconButton(
+          icon: const Icon(Icons.calendar_month, color: Colors.white),
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const CalendarScreen()),
+          ),
+        ),
+        IconButton(
+          icon: const Icon(Icons.logout_rounded, color: Colors.white),
+          onPressed: () {
+            Provider.of<AppProvider>(context, listen: false).logout();
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (_) => const WelcomeScreen()),
+              (route) => false,
+            );
+          },
+        ),
+      ],
+    );
+  }
 
-                      return Container(
-                        margin: const EdgeInsets.only(bottom: 16),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).cardColor,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.05),
-                              blurRadius: 15,
-                              offset: const Offset(0, 5),
-                            ),
-                          ],
-                        ),
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(20),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) =>
-                                    EventDetailsScreen(event: event),
-                              ),
-                            );
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Row(
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 12,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    gradient: const LinearGradient(
-                                      colors: [
-                                        Color(0xFF2E3192),
-                                        Color(0xFF1BFFFF),
-                                      ],
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                    ),
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        DateFormat('dd').format(event.date),
-                                        style: GoogleFonts.poppins(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 22,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      Text(
-                                        DateFormat('MMM').format(event.date),
-                                        style: GoogleFonts.poppins(
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        event.title,
-                                        style: GoogleFonts.poppins(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          color: Theme.of(
-                                            context,
-                                          ).textTheme.bodyLarge?.color,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 6),
-                                      Row(
-                                        children: [
-                                          Icon(
-                                            Icons.location_on,
-                                            size: 14,
-                                            color: Colors.grey[500],
-                                          ),
-                                          const SizedBox(width: 4),
-                                          Text(
-                                            event.location,
-                                            style: GoogleFonts.poppins(
-                                              color: Colors.grey[600],
-                                              fontSize: 13,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 10,
-                                          vertical: 4,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: const Color(
-                                            0xFF2E3192,
-                                          ).withValues(alpha: 0.1),
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                        ),
-                                        child: Text(
-                                          event.category.toUpperCase(),
-                                          style: GoogleFonts.poppins(
-                                            color: const Color(0xFF2E3192),
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.bold,
-                                            letterSpacing: 0.5,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                // Status Indicator
-                                Icon(statusIcon, color: statusColor, size: 28),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
+  Widget _buildHeader(BuildContext context, bool isDark) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
+      decoration: BoxDecoration(
+        gradient: isDark
+            ? LinearGradient(colors: [Colors.grey[900]!, Colors.grey[800]!])
+            : const LinearGradient(colors: AppConstants.gradientColors),
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(30),
+          bottomRight: Radius.circular(30),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'My Campus Feed',
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 16),
+          // Search Bar
+          Consumer<AppProvider>(
+            builder: (context, provider, _) {
+              return TextField(
+                onChanged: (value) => provider.setSearchQuery(value),
+                style: GoogleFonts.poppins(
+                  color: isDark ? Colors.white : Colors.black,
+                ),
+                decoration: InputDecoration(
+                  hintText: 'Search events...',
+                  hintStyle: GoogleFonts.poppins(color: Colors.grey[400]),
+                  prefixIcon: const Icon(
+                    Icons.search,
+                    color: AppColors.primary,
                   ),
+                  filled: true,
+                  fillColor: isDark ? Colors.grey[800] : Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 16),
+          // Category Chips
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Consumer<AppProvider>(
+              builder: (context, provider, _) {
+                return Row(
+                  children: provider.categories.map((category) {
+                    final isSelected = provider.selectedCategory == category;
+                    // Simplify logic for chip colors
+                    final chipBg = isSelected
+                        ? (isDark ? AppColors.primary : Colors.white)
+                        : (isDark
+                              ? Colors.grey[800]!
+                              : Colors.white.withValues(alpha: 0.2));
+                    final chipText = isSelected
+                        ? (isDark ? Colors.white : AppColors.primary)
+                        : Colors.white;
+
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: ChoiceChip(
+                        label: Text(category),
+                        selected: isSelected,
+                        onSelected: (_) => provider.setCategory(category),
+                        selectedColor: chipBg,
+                        backgroundColor: chipBg,
+                        labelStyle: GoogleFonts.poppins(
+                          color: chipText,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        checkmarkColor: chipText,
+                        side: BorderSide.none,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                );
+              },
+            ),
           ),
         ],
       ),

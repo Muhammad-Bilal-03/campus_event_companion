@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../providers/app_provider.dart';
-import '../models/event_model.dart';
-import 'event_details_screen.dart';
+import '../utils/constants.dart';
+import '../widgets/event_card.dart'; // Reuse here too!
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -18,70 +18,85 @@ class _CalendarScreenState extends State<CalendarScreen> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
 
-  List<Event> _getEventsForDay(DateTime day, List<Event> allEvents) {
-    return allEvents.where((event) {
-      return isSameDay(event.date, day);
-    }).toList();
-  }
-
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<AppProvider>(context);
     final allEvents = provider.events;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    // Filter events for selected day
+    final selectedEvents = _selectedDay == null
+        ? []
+        : allEvents.where((e) => isSameDay(e.date, _selectedDay)).toList();
 
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
           'Event Calendar',
           style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
         ),
-        backgroundColor: const Color(0xFF2E3192),
-        foregroundColor: Colors.white,
+        backgroundColor: isDark ? AppColors.cardDark : AppColors.primary,
         elevation: 0,
       ),
       body: Column(
         children: [
-          TableCalendar(
-            firstDay: DateTime.utc(2023, 1, 1),
-            lastDay: DateTime.utc(2030, 12, 31),
-            focusedDay: _focusedDay,
-            calendarFormat: _calendarFormat,
-            selectedDayPredicate: (day) {
-              return isSameDay(_selectedDay, day);
-            },
-            onDaySelected: (selectedDay, focusedDay) {
-              setState(() {
-                _selectedDay = selectedDay;
-                _focusedDay = focusedDay;
-              });
-            },
-            onFormatChanged: (format) {
-              setState(() {
-                _calendarFormat = format;
-              });
-            },
-            eventLoader: (day) => _getEventsForDay(day, allEvents),
-            calendarStyle: CalendarStyle(
-              todayDecoration: BoxDecoration(
-                color: const Color(0xFF2E3192).withValues(alpha: 0.5),
-                shape: BoxShape.circle,
+          Container(
+            color: Theme.of(context).cardColor,
+            padding: const EdgeInsets.only(bottom: 16),
+            child: TableCalendar(
+              firstDay: DateTime.utc(2023, 1, 1),
+              lastDay: DateTime.utc(2030, 12, 31),
+              focusedDay: _focusedDay,
+              calendarFormat: _calendarFormat,
+              selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+              onDaySelected: (selected, focused) {
+                setState(() {
+                  _selectedDay = selected;
+                  _focusedDay = focused;
+                });
+              },
+              onFormatChanged: (format) =>
+                  setState(() => _calendarFormat = format),
+              eventLoader: (day) =>
+                  allEvents.where((e) => isSameDay(e.date, day)).toList(),
+
+              // Styles using AppColors
+              calendarStyle: CalendarStyle(
+                defaultTextStyle: GoogleFonts.poppins(
+                  color: isDark ? Colors.white : Colors.black87,
+                ),
+                weekendTextStyle: GoogleFonts.poppins(
+                  color: isDark ? Colors.grey[400] : Colors.grey[700],
+                ),
+                todayDecoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.5),
+                  shape: BoxShape.circle,
+                ),
+                selectedDecoration: const BoxDecoration(
+                  color: AppColors.primary,
+                  shape: BoxShape.circle,
+                ),
+                markerDecoration: const BoxDecoration(
+                  color: AppColors.accent,
+                  shape: BoxShape.circle,
+                ),
               ),
-              selectedDecoration: const BoxDecoration(
-                color: Color(0xFF2E3192),
-                shape: BoxShape.circle,
-              ),
-              markerDecoration: const BoxDecoration(
-                color: Colors.redAccent,
-                shape: BoxShape.circle,
-              ),
-            ),
-            headerStyle: HeaderStyle(
-              formatButtonVisible: false,
-              titleCentered: true,
-              titleTextStyle: GoogleFonts.poppins(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+              headerStyle: HeaderStyle(
+                formatButtonVisible: false,
+                titleCentered: true,
+                titleTextStyle: GoogleFonts.poppins(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : Colors.black87,
+                ),
+                leftChevronIcon: Icon(
+                  Icons.chevron_left,
+                  color: isDark ? Colors.white : Colors.black54,
+                ),
+                rightChevronIcon: Icon(
+                  Icons.chevron_right,
+                  color: isDark ? Colors.white : Colors.black54,
+                ),
               ),
             ),
           ),
@@ -90,60 +105,16 @@ class _CalendarScreenState extends State<CalendarScreen> {
             child: _selectedDay == null
                 ? Center(
                     child: Text(
-                      'Select a date to view events',
+                      'Select a date',
                       style: GoogleFonts.poppins(color: Colors.grey),
                     ),
                   )
-                : ListView(
+                : ListView.builder(
                     padding: const EdgeInsets.all(16),
-                    children: _getEventsForDay(_selectedDay!, allEvents)
-                        .map(
-                          (event) => Card(
-                            elevation: 2,
-                            margin: const EdgeInsets.only(bottom: 12),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: ListTile(
-                              leading: Container(
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  color: const Color(
-                                    0xFF2E3192,
-                                  ).withValues(alpha: 0.1),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: const Icon(
-                                  Icons.event,
-                                  color: Color(0xFF2E3192),
-                                ),
-                              ),
-                              title: Text(
-                                event.title,
-                                style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              subtitle: Text(
-                                event.location,
-                                style: GoogleFonts.poppins(fontSize: 12),
-                              ),
-                              trailing: const Icon(
-                                Icons.arrow_forward_ios,
-                                size: 16,
-                                color: Colors.grey,
-                              ),
-                              onTap: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) =>
-                                      EventDetailsScreen(event: event),
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
-                        .toList(),
+                    itemCount: selectedEvents.length,
+                    itemBuilder: (context, index) {
+                      return EventCard(event: selectedEvents[index]);
+                    },
                   ),
           ),
         ],

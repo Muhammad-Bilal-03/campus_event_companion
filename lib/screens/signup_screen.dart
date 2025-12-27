@@ -68,7 +68,6 @@ class _SignupScreenState extends State<SignupScreen> {
             padding: const EdgeInsets.all(24.0),
             child: Card(
               elevation: 12,
-              shadowColor: Colors.black45,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(24),
               ),
@@ -79,71 +78,24 @@ class _SignupScreenState extends State<SignupScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Get Started',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  color: const Color(0xFF2E3192),
-                                ),
-                              ),
-                              Text(
-                                'Student Registration',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 14,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                            ],
-                          ),
-                          Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: const Color(
-                                0xFF2E3192,
-                              ).withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: const Icon(
-                              Icons.person_add_alt_1,
-                              color: Color(0xFF2E3192),
-                              size: 28,
-                            ),
-                          ),
-                        ],
+                      Text(
+                        'Student Registration',
+                        style: GoogleFonts.poppins(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: const Color(0xFF2E3192),
+                        ),
                       ),
                       const SizedBox(height: 32),
                       TextFormField(
                         controller: _usernameController,
-                        style: GoogleFonts.poppins(),
+                        style: GoogleFonts.poppins(color: Colors.black),
                         decoration: InputDecoration(
                           labelText: 'Username',
-                          labelStyle: GoogleFonts.poppins(
-                            color: Colors.grey[700],
-                          ),
-                          prefixIcon: const Icon(
-                            Icons.person_outline,
-                            color: Color(0xFF2E3192),
-                          ),
+                          prefixIcon: const Icon(Icons.person_outline),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
-                            borderSide: const BorderSide(color: Colors.grey),
                           ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            borderSide: const BorderSide(
-                              color: Color(0xFF2E3192),
-                              width: 2,
-                            ),
-                          ),
-                          filled: true,
-                          fillColor: Colors.grey[50],
                         ),
                         validator: (v) => v!.isEmpty ? 'Required' : null,
                       ),
@@ -151,29 +103,13 @@ class _SignupScreenState extends State<SignupScreen> {
                       TextFormField(
                         controller: _passwordController,
                         obscureText: true,
-                        style: GoogleFonts.poppins(),
+                        style: GoogleFonts.poppins(color: Colors.black),
                         decoration: InputDecoration(
                           labelText: 'Password',
-                          labelStyle: GoogleFonts.poppins(
-                            color: Colors.grey[700],
-                          ),
-                          prefixIcon: const Icon(
-                            Icons.lock_outline,
-                            color: Color(0xFF2E3192),
-                          ),
+                          prefixIcon: const Icon(Icons.lock_outline),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
-                            borderSide: const BorderSide(color: Colors.grey),
                           ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            borderSide: const BorderSide(
-                              color: Color(0xFF2E3192),
-                              width: 2,
-                            ),
-                          ),
-                          filled: true,
-                          fillColor: Colors.grey[50],
                         ),
                         validator: (v) => v!.length < 3 ? 'Min 3 chars' : null,
                       ),
@@ -181,29 +117,13 @@ class _SignupScreenState extends State<SignupScreen> {
                       TextFormField(
                         controller: _confirmPasswordController,
                         obscureText: true,
-                        style: GoogleFonts.poppins(),
+                        style: GoogleFonts.poppins(color: Colors.black),
                         decoration: InputDecoration(
                           labelText: 'Confirm Password',
-                          labelStyle: GoogleFonts.poppins(
-                            color: Colors.grey[700],
-                          ),
-                          prefixIcon: const Icon(
-                            Icons.verified_user_outlined,
-                            color: Color(0xFF2E3192),
-                          ),
+                          prefixIcon: const Icon(Icons.verified_user_outlined),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
-                            borderSide: const BorderSide(color: Colors.grey),
                           ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            borderSide: const BorderSide(
-                              color: Color(0xFF2E3192),
-                              width: 2,
-                            ),
-                          ),
-                          filled: true,
-                          fillColor: Colors.grey[50],
                         ),
                         validator: (v) => v != _passwordController.text
                             ? 'Passwords do not match'
@@ -218,7 +138,6 @@ class _SignupScreenState extends State<SignupScreen> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF2E3192),
                             foregroundColor: Colors.white,
-                            elevation: 5,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
@@ -226,9 +145,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           child: Text(
                             'CREATE ACCOUNT',
                             style: GoogleFonts.poppins(
-                              fontSize: 16,
                               fontWeight: FontWeight.w700,
-                              letterSpacing: 1,
                             ),
                           ),
                         ),

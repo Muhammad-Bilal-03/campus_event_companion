@@ -61,7 +61,6 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
             padding: const EdgeInsets.all(24.0),
             child: Card(
               elevation: 12,
-              shadowColor: Colors.black45,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(24),
               ),
@@ -93,40 +92,18 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                           color: const Color(0xFF2E3192),
                         ),
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Secure Access Only',
-                        style: GoogleFonts.poppins(
-                          color: Colors.grey[600],
-                          fontSize: 14,
-                        ),
-                      ),
                       const SizedBox(height: 32),
                       TextFormField(
                         controller: _usernameController,
-                        style: GoogleFonts.poppins(),
+                        style: GoogleFonts.poppins(color: Colors.black),
                         decoration: InputDecoration(
                           labelText: 'Admin Username',
-                          labelStyle: GoogleFonts.poppins(
-                            color: Colors.grey[700],
-                          ),
                           prefixIcon: const Icon(
                             Icons.admin_panel_settings_outlined,
-                            color: Color(0xFF2E3192),
                           ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
-                            borderSide: const BorderSide(color: Colors.grey),
                           ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            borderSide: const BorderSide(
-                              color: Color(0xFF2E3192),
-                              width: 2,
-                            ),
-                          ),
-                          filled: true,
-                          fillColor: Colors.grey[50],
                         ),
                         validator: (v) => v!.isEmpty ? 'Required' : null,
                       ),
@@ -134,29 +111,13 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                       TextFormField(
                         controller: _passwordController,
                         obscureText: true,
-                        style: GoogleFonts.poppins(),
+                        style: GoogleFonts.poppins(color: Colors.black),
                         decoration: InputDecoration(
                           labelText: 'Security Key',
-                          labelStyle: GoogleFonts.poppins(
-                            color: Colors.grey[700],
-                          ),
-                          prefixIcon: const Icon(
-                            Icons.vpn_key_outlined,
-                            color: Color(0xFF2E3192),
-                          ),
+                          prefixIcon: const Icon(Icons.vpn_key_outlined),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
-                            borderSide: const BorderSide(color: Colors.grey),
                           ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            borderSide: const BorderSide(
-                              color: Color(0xFF2E3192),
-                              width: 2,
-                            ),
-                          ),
-                          filled: true,
-                          fillColor: Colors.grey[50],
                         ),
                         validator: (v) => v!.isEmpty ? 'Required' : null,
                       ),
@@ -169,7 +130,6 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF2E3192),
                             foregroundColor: Colors.white,
-                            elevation: 5,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
@@ -177,9 +137,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                           child: Text(
                             'UNLOCK DASHBOARD',
                             style: GoogleFonts.poppins(
-                              fontSize: 16,
                               fontWeight: FontWeight.w700,
-                              letterSpacing: 1,
                             ),
                           ),
                         ),

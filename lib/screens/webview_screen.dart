@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../utils/constants.dart';
 
 class WebViewScreen extends StatefulWidget {
   final String url;
@@ -36,7 +37,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
           'Event Resource',
           style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
         ),
-        backgroundColor: const Color(0xFF2E3192),
+        backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
       ),
       body: Stack(

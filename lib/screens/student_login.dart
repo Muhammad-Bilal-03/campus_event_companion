@@ -26,7 +26,6 @@ class _StudentLoginScreenState extends State<StudentLoginScreen> {
       );
 
       if (success && !provider.isAdmin) {
-        // This should now work correctly
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (_) => const StudentHomeScreen()),
@@ -63,7 +62,6 @@ class _StudentLoginScreenState extends State<StudentLoginScreen> {
             padding: const EdgeInsets.all(24.0),
             child: Card(
               elevation: 12,
-              shadowColor: Colors.black45,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(24),
               ),
@@ -95,40 +93,16 @@ class _StudentLoginScreenState extends State<StudentLoginScreen> {
                           color: const Color(0xFF2E3192),
                         ),
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Access Your Campus Feed',
-                        style: GoogleFonts.poppins(
-                          color: Colors.grey[600],
-                          fontSize: 14,
-                        ),
-                      ),
                       const SizedBox(height: 32),
                       TextFormField(
                         controller: _usernameController,
-                        style: GoogleFonts.poppins(),
+                        style: GoogleFonts.poppins(color: Colors.black),
                         decoration: InputDecoration(
                           labelText: 'Username',
-                          labelStyle: GoogleFonts.poppins(
-                            color: Colors.grey[700],
-                          ),
-                          prefixIcon: const Icon(
-                            Icons.person_outline,
-                            color: Color(0xFF2E3192),
-                          ),
+                          prefixIcon: const Icon(Icons.person_outline),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
-                            borderSide: const BorderSide(color: Colors.grey),
                           ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            borderSide: const BorderSide(
-                              color: Color(0xFF2E3192),
-                              width: 2,
-                            ),
-                          ),
-                          filled: true,
-                          fillColor: Colors.grey[50],
                         ),
                         validator: (v) => v!.isEmpty ? 'Required' : null,
                       ),
@@ -136,29 +110,13 @@ class _StudentLoginScreenState extends State<StudentLoginScreen> {
                       TextFormField(
                         controller: _passwordController,
                         obscureText: true,
-                        style: GoogleFonts.poppins(),
+                        style: GoogleFonts.poppins(color: Colors.black),
                         decoration: InputDecoration(
                           labelText: 'Password',
-                          labelStyle: GoogleFonts.poppins(
-                            color: Colors.grey[700],
-                          ),
-                          prefixIcon: const Icon(
-                            Icons.lock_outline,
-                            color: Color(0xFF2E3192),
-                          ),
+                          prefixIcon: const Icon(Icons.lock_outline),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
-                            borderSide: const BorderSide(color: Colors.grey),
                           ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            borderSide: const BorderSide(
-                              color: Color(0xFF2E3192),
-                              width: 2,
-                            ),
-                          ),
-                          filled: true,
-                          fillColor: Colors.grey[50],
                         ),
                         validator: (v) => v!.isEmpty ? 'Required' : null,
                       ),
@@ -171,7 +129,6 @@ class _StudentLoginScreenState extends State<StudentLoginScreen> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF2E3192),
                             foregroundColor: Colors.white,
-                            elevation: 5,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
@@ -179,39 +136,28 @@ class _StudentLoginScreenState extends State<StudentLoginScreen> {
                           child: Text(
                             'ENTER CAMPUS',
                             style: GoogleFonts.poppins(
-                              fontSize: 16,
                               fontWeight: FontWeight.w700,
-                              letterSpacing: 1,
                             ),
                           ),
                         ),
                       ),
                       const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "New here?",
-                            style: GoogleFonts.poppins(color: Colors.grey[600]),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => const SignupScreen(),
-                                ),
-                              );
-                            },
-                            child: Text(
-                              'Create Account',
-                              style: GoogleFonts.poppins(
-                                fontWeight: FontWeight.bold,
-                                color: const Color(0xFF2E3192),
-                              ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const SignupScreen(),
                             ),
+                          );
+                        },
+                        child: Text(
+                          'Create Account',
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0xFF2E3192),
                           ),
-                        ],
+                        ),
                       ),
                     ],
                   ),

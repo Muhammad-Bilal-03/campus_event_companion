@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
-import 'package:intl/intl.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import '../models/event_model.dart';
 import '../providers/app_provider.dart';
+import '../utils/constants.dart'; // Import constants
 
 class AddEventScreen extends StatefulWidget {
   final Event? event;
+
   const AddEventScreen({super.key, this.event});
 
   @override
@@ -19,7 +22,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
   final _descController = TextEditingController();
   final _locationController = TextEditingController();
   final _categoryController = TextEditingController();
-  final _linkController = TextEditingController(); // New Controller
+  final _linkController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
   final _formKey = GlobalKey<FormState>();
 
@@ -45,9 +48,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
         date: _selectedDate,
         location: _locationController.text,
         category: _categoryController.text,
-        // Use default 'None' or preserve existing status
         participationStatus: widget.event?.participationStatus ?? 'None',
-        // Add the link URL
         linkUrl: _linkController.text.isNotEmpty ? _linkController.text : null,
       );
 
@@ -66,7 +67,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.light(
-              primary: Color(0xFF2E3192),
+              primary: AppColors.primary, // Used constant
               onPrimary: Colors.white,
               onSurface: Colors.black,
             ),
@@ -75,9 +76,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
         );
       },
     );
-    if (picked != null) {
-      setState(() => _selectedDate = picked);
-    }
+    if (picked != null) setState(() => _selectedDate = picked);
   }
 
   @override
@@ -85,7 +84,6 @@ class _AddEventScreenState extends State<AddEventScreen> {
     final isEditing = widget.event != null;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
           isEditing ? 'Edit Event' : 'Create Event',
@@ -93,28 +91,17 @@ class _AddEventScreenState extends State<AddEventScreen> {
         ),
         flexibleSpace: Container(
           decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFF2E3192), Color(0xFF1BFFFF)],
-            ),
+            gradient: LinearGradient(colors: AppConstants.gradientColors),
           ),
         ),
-        foregroundColor: Colors.white,
-        elevation: 0,
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
             Container(
-              width: double.infinity,
               height: 20,
               decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [Color(0xFF2E3192), Color(0xFF1BFFFF)],
-                ),
+                gradient: LinearGradient(colors: AppConstants.gradientColors),
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(30),
                   bottomRight: Radius.circular(30),
@@ -135,71 +122,33 @@ class _AddEventScreenState extends State<AddEventScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Event Details',
-                          style: GoogleFonts.poppins(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: const Color(0xFF2E3192),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        TextFormField(
-                          controller: _titleController,
-                          style: GoogleFonts.poppins(),
-                          decoration: InputDecoration(
-                            labelText: 'Title',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            prefixIcon: const Icon(
-                              Icons.title,
-                              color: Color(0xFF2E3192),
-                            ),
-                          ),
-                          validator: (v) => v!.isEmpty ? 'Required' : null,
-                        ),
+                        _buildTextField(_titleController, 'Title', Icons.title),
                         const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _descController,
+                        _buildTextField(
+                          _descController,
+                          'Description',
+                          Icons.description,
                           maxLines: 3,
-                          style: GoogleFonts.poppins(),
-                          decoration: InputDecoration(
-                            labelText: 'Description',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            prefixIcon: const Icon(
-                              Icons.description,
-                              color: Color(0xFF2E3192),
-                            ),
-                          ),
-                          validator: (v) => v!.isEmpty ? 'Required' : null,
                         ),
                         const SizedBox(height: 16),
                         InkWell(
                           onTap: _pickDate,
-                          borderRadius: BorderRadius.circular(12),
-                          child: Container(
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey),
-                              borderRadius: BorderRadius.circular(12),
+                          child: InputDecorator(
+                            decoration: InputDecoration(
+                              labelText: 'Date',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              prefixIcon: const Icon(
+                                Icons.calendar_today,
+                                color: AppColors.primary,
+                              ),
                             ),
-                            child: Row(
-                              children: [
-                                const Icon(
-                                  Icons.calendar_today,
-                                  color: Color(0xFF2E3192),
-                                ),
-                                const SizedBox(width: 10),
-                                Text(
-                                  DateFormat(
-                                    'EEEE, MMM d, yyyy',
-                                  ).format(_selectedDate),
-                                  style: GoogleFonts.poppins(fontSize: 16),
-                                ),
-                              ],
+                            child: Text(
+                              DateFormat(
+                                'EEEE, MMM d, yyyy',
+                              ).format(_selectedDate),
+                              style: GoogleFonts.poppins(),
                             ),
                           ),
                         ),
@@ -207,60 +156,28 @@ class _AddEventScreenState extends State<AddEventScreen> {
                         Row(
                           children: [
                             Expanded(
-                              child: TextFormField(
-                                controller: _locationController,
-                                style: GoogleFonts.poppins(),
-                                decoration: InputDecoration(
-                                  labelText: 'Location',
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  prefixIcon: const Icon(
-                                    Icons.location_on,
-                                    color: Color(0xFF2E3192),
-                                  ),
-                                ),
-                                validator: (v) =>
-                                    v!.isEmpty ? 'Required' : null,
+                              child: _buildTextField(
+                                _locationController,
+                                'Location',
+                                Icons.location_on,
                               ),
                             ),
                             const SizedBox(width: 16),
                             Expanded(
-                              child: TextFormField(
-                                controller: _categoryController,
-                                style: GoogleFonts.poppins(),
-                                decoration: InputDecoration(
-                                  labelText: 'Category',
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  prefixIcon: const Icon(
-                                    Icons.label,
-                                    color: Color(0xFF2E3192),
-                                  ),
-                                ),
-                                validator: (v) =>
-                                    v!.isEmpty ? 'Required' : null,
+                              child: _buildTextField(
+                                _categoryController,
+                                'Category',
+                                Icons.label,
                               ),
                             ),
                           ],
                         ),
                         const SizedBox(height: 16),
-                        // New Link Field
-                        TextFormField(
-                          controller: _linkController,
-                          style: GoogleFonts.poppins(),
-                          decoration: InputDecoration(
-                            labelText: 'External Link (Optional)',
-                            hintText: 'https://...',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            prefixIcon: const Icon(
-                              Icons.link,
-                              color: Color(0xFF2E3192),
-                            ),
-                          ),
+                        _buildTextField(
+                          _linkController,
+                          'Link (Optional)',
+                          Icons.link,
+                          isRequired: false,
                         ),
                         const SizedBox(height: 32),
                         SizedBox(
@@ -269,17 +186,16 @@ class _AddEventScreenState extends State<AddEventScreen> {
                           child: ElevatedButton(
                             onPressed: _submit,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF2E3192),
+                              backgroundColor: AppColors.primary,
                               foregroundColor: Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
                             ),
                             child: Text(
-                              isEditing ? 'UPDATE EVENT' : 'PUBLISH EVENT',
+                              isEditing ? 'UPDATE' : 'PUBLISH',
                               style: GoogleFonts.poppins(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 16,
                               ),
                             ),
                           ),
@@ -293,6 +209,26 @@ class _AddEventScreenState extends State<AddEventScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildTextField(
+    TextEditingController controller,
+    String label,
+    IconData icon, {
+    int maxLines = 1,
+    bool isRequired = true,
+  }) {
+    return TextFormField(
+      controller: controller,
+      maxLines: maxLines,
+      style: GoogleFonts.poppins(),
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        prefixIcon: Icon(icon, color: AppColors.primary),
+      ),
+      validator: isRequired ? (v) => v!.isEmpty ? 'Required' : null : null,
     );
   }
 }

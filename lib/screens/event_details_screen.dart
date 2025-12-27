@@ -14,6 +14,7 @@ class EventDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<AppProvider>(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -22,15 +23,17 @@ class EventDetailsScreen extends StatelessWidget {
           'Event Details',
           style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
         ),
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFF2E3192), Color(0xFF1BFFFF)],
-            ),
-          ),
-        ),
+        flexibleSpace: isDark
+            ? null
+            : Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xFF2E3192), Color(0xFF1BFFFF)],
+                  ),
+                ),
+              ),
         foregroundColor: Colors.white,
         elevation: 0,
       ),
@@ -41,13 +44,17 @@ class EventDetailsScreen extends StatelessWidget {
             Container(
               width: double.infinity,
               height: 150,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [Color(0xFF2E3192), Color(0xFF1BFFFF)],
-                ),
-                borderRadius: BorderRadius.only(
+              decoration: BoxDecoration(
+                gradient: isDark
+                    ? LinearGradient(
+                        colors: [Colors.grey[900]!, Colors.grey[800]!],
+                      )
+                    : const LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [Color(0xFF2E3192), Color(0xFF1BFFFF)],
+                      ),
+                borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(30),
                   bottomRight: Radius.circular(30),
                 ),
@@ -65,7 +72,6 @@ class EventDetailsScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Category Badge
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 12,
@@ -78,21 +84,20 @@ class EventDetailsScreen extends StatelessWidget {
                     child: Text(
                       event.category.toUpperCase(),
                       style: GoogleFonts.poppins(
-                        color: const Color(0xFF2E3192),
+                        color: isDark ? Colors.white : const Color(0xFF2E3192),
                         fontWeight: FontWeight.bold,
                         letterSpacing: 1,
                       ),
                     ),
                   ),
                   const SizedBox(height: 16),
-
-                  // Title
                   Text(
                     event.title,
                     style: GoogleFonts.poppins(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
-                      color: Theme.of(context).textTheme.bodyLarge?.color,
+                      // Dynamic color: White in dark mode, Blue in light mode
+                      color: isDark ? Colors.white : const Color(0xFF2E3192),
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -102,9 +107,11 @@ class EventDetailsScreen extends StatelessWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.grey[100],
+                      color: isDark ? Colors.grey[800] : Colors.grey[100],
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.grey[300]!),
+                      border: Border.all(
+                        color: isDark ? Colors.grey[700]! : Colors.grey[300]!,
+                      ),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,7 +120,7 @@ class EventDetailsScreen extends StatelessWidget {
                           'Your Attendance',
                           style: GoogleFonts.poppins(
                             fontWeight: FontWeight.bold,
-                            color: Colors.grey[700],
+                            color: isDark ? Colors.white70 : Colors.grey[700],
                           ),
                         ),
                         const SizedBox(height: 12),
@@ -126,6 +133,7 @@ class EventDetailsScreen extends StatelessWidget {
                               event,
                               'None',
                               Icons.cancel_outlined,
+                              isDark,
                             ),
                             _buildStatusOption(
                               context,
@@ -133,6 +141,7 @@ class EventDetailsScreen extends StatelessWidget {
                               event,
                               'Interested',
                               Icons.star_outline,
+                              isDark,
                             ),
                             _buildStatusOption(
                               context,
@@ -140,6 +149,7 @@ class EventDetailsScreen extends StatelessWidget {
                               event,
                               'Going',
                               Icons.check_circle_outline,
+                              isDark,
                             ),
                           ],
                         ),
@@ -148,16 +158,20 @@ class EventDetailsScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
 
-                  // Info Rows
                   _buildInfoRow(
                     Icons.calendar_today,
                     'Date',
                     DateFormat('EEEE, MMMM d, yyyy').format(event.date),
+                    isDark,
                   ),
                   const SizedBox(height: 20),
-                  _buildInfoRow(Icons.location_on, 'Location', event.location),
+                  _buildInfoRow(
+                    Icons.location_on,
+                    'Location',
+                    event.location,
+                    isDark,
+                  ),
 
-                  // External Link Button
                   if (event.linkUrl != null && event.linkUrl!.isNotEmpty) ...[
                     const SizedBox(height: 24),
                     SizedBox(
@@ -190,14 +204,12 @@ class EventDetailsScreen extends StatelessWidget {
                   ],
 
                   const SizedBox(height: 32),
-
-                  // Description
                   Text(
                     'About this event',
                     style: GoogleFonts.poppins(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: const Color(0xFF2E3192),
+                      color: isDark ? Colors.white : const Color(0xFF2E3192),
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -205,7 +217,7 @@ class EventDetailsScreen extends StatelessWidget {
                     event.description,
                     style: GoogleFonts.poppins(
                       fontSize: 15,
-                      color: Colors.grey[700],
+                      color: isDark ? Colors.grey[300] : Colors.grey[700],
                       height: 1.6,
                     ),
                   ),
@@ -225,9 +237,12 @@ class EventDetailsScreen extends StatelessWidget {
     Event event,
     String value,
     IconData icon,
+    bool isDark,
   ) {
     final isSelected = event.participationStatus == value;
-    final color = isSelected ? const Color(0xFF2E3192) : Colors.grey;
+    final color = isSelected
+        ? (isDark ? Colors.white : const Color(0xFF2E3192))
+        : Colors.grey;
 
     return InkWell(
       onTap: () => provider.updateParticipationStatus(event.id, value),
@@ -258,13 +273,13 @@ class EventDetailsScreen extends StatelessWidget {
     return Icons.cancel;
   }
 
-  Widget _buildInfoRow(IconData icon, String label, String value) {
+  Widget _buildInfoRow(IconData icon, String label, String value, bool isDark) {
     return Row(
       children: [
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: Colors.grey[100],
+            color: isDark ? Colors.grey[800] : Colors.grey[100],
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(icon, color: const Color(0xFF2E3192)),
@@ -286,6 +301,7 @@ class EventDetailsScreen extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w600,
                   fontSize: 16,
+                  color: isDark ? Colors.white : Colors.black87,
                 ),
               ),
             ],
