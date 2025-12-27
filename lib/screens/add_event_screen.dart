@@ -19,6 +19,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
   final _descController = TextEditingController();
   final _locationController = TextEditingController();
   final _categoryController = TextEditingController();
+  final _linkController = TextEditingController(); // New Controller
   DateTime _selectedDate = DateTime.now();
   final _formKey = GlobalKey<FormState>();
 
@@ -30,6 +31,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
       _descController.text = widget.event!.description;
       _locationController.text = widget.event!.location;
       _categoryController.text = widget.event!.category;
+      _linkController.text = widget.event!.linkUrl ?? '';
       _selectedDate = widget.event!.date;
     }
   }
@@ -43,7 +45,10 @@ class _AddEventScreenState extends State<AddEventScreen> {
         date: _selectedDate,
         location: _locationController.text,
         category: _categoryController.text,
-        isFavorite: widget.event?.isFavorite ?? false,
+        // Use default 'None' or preserve existing status
+        participationStatus: widget.event?.participationStatus ?? 'None',
+        // Add the link URL
+        linkUrl: _linkController.text.isNotEmpty ? _linkController.text : null,
       );
 
       Provider.of<AppProvider>(context, listen: false).addEvent(event);
@@ -80,7 +85,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
     final isEditing = widget.event != null;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F7),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
           isEditing ? 'Edit Event' : 'Create Event',
@@ -239,6 +244,23 @@ class _AddEventScreenState extends State<AddEventScreen> {
                               ),
                             ),
                           ],
+                        ),
+                        const SizedBox(height: 16),
+                        // New Link Field
+                        TextFormField(
+                          controller: _linkController,
+                          style: GoogleFonts.poppins(),
+                          decoration: InputDecoration(
+                            labelText: 'External Link (Optional)',
+                            hintText: 'https://...',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            prefixIcon: const Icon(
+                              Icons.link,
+                              color: Color(0xFF2E3192),
+                            ),
+                          ),
                         ),
                         const SizedBox(height: 32),
                         SizedBox(

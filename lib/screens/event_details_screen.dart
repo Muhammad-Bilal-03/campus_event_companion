@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../models/event_model.dart';
 import '../providers/app_provider.dart';
+import 'webview_screen.dart';
 
 class EventDetailsScreen extends StatelessWidget {
   final Event event;
@@ -13,10 +14,9 @@ class EventDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<AppProvider>(context);
-    final isFavorite = event.isFavorite;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
           'Event Details',
@@ -33,20 +33,6 @@ class EventDetailsScreen extends StatelessWidget {
         ),
         foregroundColor: Colors.white,
         elevation: 0,
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          provider.toggleReminder(event.id);
-        },
-        backgroundColor: isFavorite ? Colors.amber : const Color(0xFF2E3192),
-        foregroundColor: isFavorite ? Colors.black : Colors.white,
-        icon: Icon(
-          isFavorite ? Icons.notifications_active : Icons.notifications_none,
-        ),
-        label: Text(
-          isFavorite ? 'Reminder Set' : 'Set Reminder',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
-        ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -79,6 +65,7 @@ class EventDetailsScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Category Badge
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 12,
@@ -98,87 +85,113 @@ class EventDetailsScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
+
+                  // Title
                   Text(
                     event.title,
                     style: GoogleFonts.poppins(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
-                      color: const Color(0xFF2E3192),
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
                     ),
                   ),
                   const SizedBox(height: 24),
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[100],
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Icon(
-                          Icons.calendar_today,
-                          color: Color(0xFF2E3192),
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Date',
-                            style: GoogleFonts.poppins(
-                              color: Colors.grey[600],
-                              fontSize: 12,
-                            ),
+
+                  // Attendance Section
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.grey[300]!),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Your Attendance',
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey[700],
                           ),
-                          Text(
-                            DateFormat('EEEE, MMMM d, yyyy').format(event.date),
-                            style: GoogleFonts.poppins(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            _buildStatusOption(
+                              context,
+                              provider,
+                              event,
+                              'None',
+                              Icons.cancel_outlined,
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                            _buildStatusOption(
+                              context,
+                              provider,
+                              event,
+                              'Interested',
+                              Icons.star_outline,
+                            ),
+                            _buildStatusOption(
+                              context,
+                              provider,
+                              event,
+                              'Going',
+                              Icons.check_circle_outline,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Info Rows
+                  _buildInfoRow(
+                    Icons.calendar_today,
+                    'Date',
+                    DateFormat('EEEE, MMMM d, yyyy').format(event.date),
                   ),
                   const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[100],
-                          borderRadius: BorderRadius.circular(12),
+                  _buildInfoRow(Icons.location_on, 'Location', event.location),
+
+                  // External Link Button
+                  if (event.linkUrl != null && event.linkUrl!.isNotEmpty) ...[
+                    const SizedBox(height: 24),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  WebViewScreen(url: event.linkUrl!),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.language),
+                        label: Text(
+                          'Visit Official Page',
+                          style: GoogleFonts.poppins(),
                         ),
-                        child: const Icon(
-                          Icons.location_on,
-                          color: Color(0xFF2E3192),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF2E3192),
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
                       ),
-                      const SizedBox(width: 16),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Location',
-                            style: GoogleFonts.poppins(
-                              color: Colors.grey[600],
-                              fontSize: 12,
-                            ),
-                          ),
-                          Text(
-                            event.location,
-                            style: GoogleFonts.poppins(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
+
                   const SizedBox(height: 32),
+
+                  // Description
                   Text(
                     'About this event',
                     style: GoogleFonts.poppins(
@@ -196,13 +209,89 @@ class EventDetailsScreen extends StatelessWidget {
                       height: 1.6,
                     ),
                   ),
-                  const SizedBox(height: 80),
+                  const SizedBox(height: 40),
                 ],
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildStatusOption(
+    BuildContext context,
+    AppProvider provider,
+    Event event,
+    String value,
+    IconData icon,
+  ) {
+    final isSelected = event.participationStatus == value;
+    final color = isSelected ? const Color(0xFF2E3192) : Colors.grey;
+
+    return InkWell(
+      onTap: () => provider.updateParticipationStatus(event.id, value),
+      child: Column(
+        children: [
+          Icon(
+            isSelected ? _getFilledIcon(icon) : icon,
+            color: color,
+            size: 30,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: GoogleFonts.poppins(
+              color: color,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              fontSize: 12,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  IconData _getFilledIcon(IconData icon) {
+    if (icon == Icons.star_outline) return Icons.star;
+    if (icon == Icons.check_circle_outline) return Icons.check_circle;
+    return Icons.cancel;
+  }
+
+  Widget _buildInfoRow(IconData icon, String label, String value) {
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Colors.grey[100],
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(icon, color: const Color(0xFF2E3192)),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: GoogleFonts.poppins(
+                  color: Colors.grey[600],
+                  fontSize: 12,
+                ),
+              ),
+              Text(
+                value,
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

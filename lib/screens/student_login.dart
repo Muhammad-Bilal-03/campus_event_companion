@@ -26,6 +26,7 @@ class _StudentLoginScreenState extends State<StudentLoginScreen> {
       );
 
       if (success && !provider.isAdmin) {
+        // This should now work correctly
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (_) => const StudentHomeScreen()),

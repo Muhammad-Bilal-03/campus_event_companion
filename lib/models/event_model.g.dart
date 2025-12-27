@@ -1,4 +1,10 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
 part of 'event_model.dart';
+
+// **************************************************************************
+// TypeAdapterGenerator
+// **************************************************************************
 
 class EventAdapter extends TypeAdapter<Event> {
   @override
@@ -17,14 +23,15 @@ class EventAdapter extends TypeAdapter<Event> {
       date: fields[3] as DateTime,
       location: fields[4] as String,
       category: fields[5] as String,
-      isFavorite: fields[6] as bool,
+      participationStatus: fields[6] as String,
+      linkUrl: fields[7] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Event obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -38,7 +45,9 @@ class EventAdapter extends TypeAdapter<Event> {
       ..writeByte(5)
       ..write(obj.category)
       ..writeByte(6)
-      ..write(obj.isFavorite);
+      ..write(obj.participationStatus)
+      ..writeByte(7)
+      ..write(obj.linkUrl);
   }
 
   @override

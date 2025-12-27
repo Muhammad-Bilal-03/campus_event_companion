@@ -5,7 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../providers/app_provider.dart';
 import 'welcome_screen.dart';
 import 'event_details_screen.dart';
-import 'calendar_screen.dart'; // Import the new calendar screen
+import 'calendar_screen.dart';
+import 'settings_screen.dart';
 
 class StudentHomeScreen extends StatefulWidget {
   const StudentHomeScreen({super.key});
@@ -39,7 +40,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
     }).toList();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F7),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         elevation: 0,
         flexibleSpace: Container(
@@ -59,6 +60,16 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
           ),
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.settings, color: Colors.white),
+            tooltip: "Settings",
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const SettingsScreen()),
+              );
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.calendar_month, color: Colors.white),
             tooltip: "Calendar View",
@@ -145,7 +156,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                             });
                           },
                           selectedColor: Colors.white,
-                          backgroundColor: Colors.grey.shade400,
+                          backgroundColor: Colors.white.withValues(alpha: 0.2),
                           labelStyle: GoogleFonts.poppins(
                             color: isSelected
                                 ? const Color(0xFF2E3192)
@@ -189,10 +200,23 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                     itemCount: events.length,
                     itemBuilder: (context, index) {
                       final event = events[index];
+
+                      // Status Logic
+                      IconData statusIcon = Icons.circle_outlined;
+                      Color statusColor = Colors.grey;
+
+                      if (event.participationStatus == 'Going') {
+                        statusIcon = Icons.check_circle;
+                        statusColor = Colors.green;
+                      } else if (event.participationStatus == 'Interested') {
+                        statusIcon = Icons.star;
+                        statusColor = Colors.amber;
+                      }
+
                       return Container(
                         margin: const EdgeInsets.only(bottom: 16),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: Theme.of(context).cardColor,
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
@@ -264,7 +288,9 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                                         style: GoogleFonts.poppins(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16,
-                                          color: const Color(0xFF2E3192),
+                                          color: Theme.of(
+                                            context,
+                                          ).textTheme.bodyLarge?.color,
                                         ),
                                       ),
                                       const SizedBox(height: 6),
@@ -312,19 +338,8 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                                     ],
                                   ),
                                 ),
-                                IconButton(
-                                  icon: Icon(
-                                    event.isFavorite
-                                        ? Icons.notifications_active
-                                        : Icons.notifications_none,
-                                    color: event.isFavorite
-                                        ? const Color(0xFFFFC107)
-                                        : Colors.grey[400],
-                                    size: 28,
-                                  ),
-                                  onPressed: () =>
-                                      provider.toggleReminder(event.id),
-                                ),
+                                // Status Indicator
+                                Icon(statusIcon, color: statusColor, size: 28),
                               ],
                             ),
                           ),

@@ -23,7 +23,10 @@ class Event extends HiveObject {
   final String category;
 
   @HiveField(6)
-  bool isFavorite;
+  String participationStatus; // Values: "None", "Interested", "Going"
+
+  @HiveField(7)
+  final String? linkUrl; // Nullable URL for external resources
 
   Event({
     required this.id,
@@ -32,6 +35,7 @@ class Event extends HiveObject {
     required this.date,
     required this.location,
     required this.category,
-    this.isFavorite = false,
+    this.participationStatus = 'None',
+    this.linkUrl,
   });
 }

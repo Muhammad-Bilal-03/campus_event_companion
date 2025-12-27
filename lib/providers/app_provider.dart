@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/event_model.dart';
 import '../models/user_model.dart';
 import '../services/notification_service.dart';
@@ -8,6 +9,10 @@ class AppProvider with ChangeNotifier {
   Box<Event>? _eventBox;
   Box<User>? _userBox;
   User? _currentUser;
+
+  // Theme State
+  ThemeMode _themeMode = ThemeMode.system;
+  ThemeMode get themeMode => _themeMode;
 
   List<Event> _events = [];
   List<Event> get events => _events;
@@ -22,6 +27,11 @@ class AppProvider with ChangeNotifier {
 
     _eventBox = await Hive.openBox<Event>('events');
     _userBox = await Hive.openBox<User>('users');
+
+    // Load Theme Preference
+    final prefs = await SharedPreferences.getInstance();
+    final isDark = prefs.getBool('isDark') ?? false;
+    _themeMode = isDark ? ThemeMode.dark : ThemeMode.light;
 
     if (_userBox!.isEmpty) {
       _userBox!.put(
@@ -43,6 +53,20 @@ class AppProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  // --- Theme Management ---
+  Future<void> toggleTheme() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (_themeMode == ThemeMode.dark) {
+      _themeMode = ThemeMode.light;
+      await prefs.setBool('isDark', false);
+    } else {
+      _themeMode = ThemeMode.dark;
+      await prefs.setBool('isDark', true);
+    }
+    notifyListeners();
+  }
+
+  // --- Auth Management ---
   bool login(String username, String password) {
     try {
       final user = _userBox!.values.firstWhere(
@@ -74,6 +98,7 @@ class AppProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  // --- Event Management ---
   Future<void> addEvent(Event event) async {
     await _eventBox!.put(event.id, event);
     _loadEvents();
@@ -84,24 +109,28 @@ class AppProvider with ChangeNotifier {
     _loadEvents();
   }
 
-  Future<void> toggleReminder(String id) async {
+  // Updated Attendance Logic
+  Future<void> updateParticipationStatus(String id, String status) async {
     final event = _eventBox!.get(id);
     if (event != null) {
-      event.isFavorite = !event.isFavorite;
+      event.participationStatus = status;
       await event.save();
 
-      if (event.isFavorite) {
-        // Trigger Immediate Notification
+      // Schedule notification if user is Interested or Going
+      if (status == 'Interested' || status == 'Going') {
+        // Immediate Feedback
         NotificationService.showNotification(
           id: event.id.hashCode,
-          title: 'Reminder Set!',
-          body: 'You will be reminded about "${event.title}"',
+          title: 'Status Updated',
+          body: 'You are marked as "$status" for ${event.title}',
         );
+
+        // Schedule Alarm
         if (event.date.isAfter(DateTime.now())) {
           NotificationService.scheduleNotification(
             id: event.id.hashCode + 1,
-            title: 'Upcoming Event!',
-            body: '${event.title} is starting soon at ${event.location}.',
+            title: 'Event Reminder',
+            body: '${event.title} is starting soon! Status: $status',
             scheduledDate: event.date.subtract(const Duration(hours: 1)),
           );
         }

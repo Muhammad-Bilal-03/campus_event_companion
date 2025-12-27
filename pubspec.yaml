@@ -1,5 +1,5 @@
 name: app_dev_project
-description: "A comprehensive Campus Event Companion app featuring role-based access (Admin/Student), local database persistence with Hive, and a modern UI."
+description: "A comprehensive Campus Event Companion app."
 publish_to: 'none'
 
 version: 1.0.0+1
@@ -13,7 +13,7 @@ dependencies:
 
   # UI & Icons
   cupertino_icons: ^1.0.8
-  google_fonts: ^6.1.0  # Required for the new fonts
+  google_fonts: ^6.1.0
 
   # State Management
   provider: ^6.1.5+1
@@ -21,25 +21,23 @@ dependencies:
   # Database (Local Storage)
   hive: ^2.2.3
   hive_flutter: ^1.1.0
+  shared_preferences: ^2.2.0  # Added
 
   # Utilities
   intl: ^0.20.2
   uuid: ^4.5.2
 
-  # New Features (Calendar & Notifications)
+  # New Features
   flutter_local_notifications: ^17.2.2
   timezone: ^0.9.4
   table_calendar: ^3.1.2
+  webview_flutter: ^4.4.2     # Added
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-  # Code Generation
   build_runner: ^2.4.13
   hive_generator: ^2.0.1
-
-  # Linter
   flutter_lints: ^5.0.0
 
 flutter:
