@@ -10,31 +10,26 @@ class AppColors {
 }
 
 class AppConstants {
-  static const String appName = 'Campus Event Companion';
+  // UPDATED: New App Name
+  static const String appName = 'Campus Pulse';
+
   static const List<Color> gradientColors = [
     AppColors.primary,
     AppColors.accent,
   ];
 
-  // --- CITY PLANNER COORDINATES (Symmetrical & Aligned) ---
   static const Map<String, Offset> campusLocations = {
-    // 1. THE NORTH AXIS (Focal Point)
-    'Auditorium': Offset(0.5, 0.15), // Top Center
-    // 2. THE ACADEMIC QUAD (Upper Flanks)
-    'Main Library': Offset(0.20, 0.25), // Top Left
-    'CS Department': Offset(0.80, 0.25), // Top Right
-    // 3. THE CENTRAL HUB (Middle)
-    'Student Center': Offset(0.5, 0.45), // Dead Center (The Heart)
-    'Admin Block': Offset(0.20, 0.45), // Mid Left (Aligned with Library X)
-    'Engineering Block': Offset(0.80, 0.45), // Mid Right (Aligned with CS X)
-    // 4. THE SERVICE LOOP (Lower Flanks)
-    'Cafeteria': Offset(0.20, 0.65),
-    'Mosque': Offset(0.80, 0.65),
-
-    // 5. THE SOUTH ENTRANCE (Bottom)
-    'Sports Ground': Offset(0.5, 0.70), // Center Green
-    'Gymnasium': Offset(0.80, 0.85), // Bottom Right
-    'Parking Lot': Offset(0.20, 0.85), // Bottom Left
-    'Main Gate': Offset(0.5, 0.95), // Entry Point
+    'Main Gate': Offset(0.5, 0.95),
+    'Admin Block': Offset(0.5, 0.82),
+    'Student Center': Offset(0.5, 0.55),
+    'Auditorium': Offset(0.5, 0.35),
+    'Mosque': Offset(0.15, 0.12),
+    'Main Library': Offset(0.20, 0.30),
+    'CS Department': Offset(0.80, 0.30),
+    'Cafeteria': Offset(0.20, 0.55),
+    'Engineering Block': Offset(0.80, 0.55),
+    'Parking Lot': Offset(0.15, 0.85),
+    'Gymnasium': Offset(0.85, 0.85),
+    'Sports Ground': Offset(0.85, 0.72),
   };
 }

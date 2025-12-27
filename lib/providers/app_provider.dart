@@ -21,22 +21,40 @@ class AppProvider with ChangeNotifier {
   String get selectedCategory => _selectedCategory;
   List<Event> get events => _events;
 
+  // UPDATED: Filter Logic
   List<Event> get filteredEvents {
-    if (_searchQuery.isEmpty && _selectedCategory == "All") {
-      return _events;
-    }
     return _events.where((event) {
+      // 1. Search Filter
       final matchesSearch =
           event.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           event.location.toLowerCase().contains(_searchQuery.toLowerCase());
-      final matchesCategory =
-          _selectedCategory == "All" || event.category == _selectedCategory;
+
+      // 2. Category / Status Filter
+      bool matchesCategory = false;
+      if (_selectedCategory == "All") {
+        matchesCategory = true;
+      } else if (_selectedCategory == "Interested") {
+        // Filter by Status: Interested
+        matchesCategory = event.participationStatus == "Interested";
+      } else if (_selectedCategory == "Going") {
+        // Filter by Status: Going
+        matchesCategory = event.participationStatus == "Going";
+      } else {
+        // Filter by Actual Category (e.g., "Sports")
+        matchesCategory = event.category == _selectedCategory;
+      }
+
       return matchesSearch && matchesCategory;
     }).toList();
   }
 
+  // UPDATED: Categories List includes Statuses
   List<String> get categories {
-    return ["All", ..._events.map((e) => e.category).toSet()];
+    // We explicitly add "Interested" and "Going" after "All"
+    final allCategories = _events.map((e) => e.category).toSet().toList();
+    allCategories.sort(); // Optional: Sort categories alphabetically
+
+    return ["All", "Interested", "Going", ...allCategories];
   }
 
   Future<void> init() async {
@@ -119,23 +137,17 @@ class AppProvider with ChangeNotifier {
     _loadEvents();
   }
 
-  // UPDATED: Handle Seat Logic and return success bool
   Future<bool> updateParticipationStatus(String id, String newStatus) async {
     final event = _eventBox!.get(id);
     if (event != null) {
       final oldStatus = event.participationStatus;
 
-      // Logic: If moving TO 'Going', increment seat.
-      // If moving FROM 'Going', decrement seat.
-
       if (newStatus == 'Going' && oldStatus != 'Going') {
-        // Check availability
         if (event.totalSeats != null && event.seatsTaken >= event.totalSeats!) {
-          return false; // Event is full
+          return false;
         }
         event.seatsTaken++;
       } else if (newStatus != 'Going' && oldStatus == 'Going') {
-        // Release seat
         if (event.seatsTaken > 0) event.seatsTaken--;
       }
 
