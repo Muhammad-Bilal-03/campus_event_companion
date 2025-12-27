@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../models/event_model.dart';
 import '../providers/app_provider.dart';
 import 'webview_screen.dart';
+import 'campus_map_screen.dart'; // Import the new screen
 
 class EventDetailsScreen extends StatelessWidget {
   final Event event;
@@ -13,7 +14,6 @@ class EventDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Re-access event from provider to get live updates on seats
     final provider = Provider.of<AppProvider>(context);
     final liveEvent = provider.events.firstWhere(
       (e) => e.id == event.id,
@@ -78,6 +78,7 @@ class EventDetailsScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // ... (Previous Category and Title code remains the same) ...
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -101,7 +102,6 @@ class EventDetailsScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      // New: Seats Indicator
                       if (liveEvent.totalSeats != null)
                         Container(
                           padding: const EdgeInsets.symmetric(
@@ -150,7 +150,7 @@ class EventDetailsScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
 
-                  // Attendance Section
+                  // Attendance Section Code (Same as before) ...
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
@@ -213,11 +213,29 @@ class EventDetailsScreen extends StatelessWidget {
                     isDark,
                   ),
                   const SizedBox(height: 20),
+
+                  // UPDATED LOCATION ROW WITH MAP BUTTON
                   _buildInfoRow(
                     Icons.location_on,
                     'Location',
                     liveEvent.location,
                     isDark,
+                    trailing: IconButton(
+                      icon: const Icon(
+                        Icons.map_rounded,
+                        color: Color(0xFF2E3192),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => CampusMapScreen(
+                              highlightLocation: liveEvent.location,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
 
                   if (liveEvent.linkUrl != null &&
@@ -280,6 +298,7 @@ class EventDetailsScreen extends StatelessWidget {
     );
   }
 
+  // ... (Helper methods for Status Options remain the same) ...
   Widget _buildStatusOption(
     BuildContext context,
     AppProvider provider,
@@ -293,7 +312,6 @@ class EventDetailsScreen extends StatelessWidget {
         ? (isDark ? Colors.white : const Color(0xFF2E3192))
         : Colors.grey;
 
-    // Logic to disable "Going" if full and not already going
     bool isFull = false;
     if (value == 'Going' &&
         event.participationStatus != 'Going' &&
@@ -307,7 +325,7 @@ class EventDetailsScreen extends StatelessWidget {
       onTap: isFull
           ? () {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Sorry, this event is full!')),
+                const SnackBar(content: Text('Sorry, this event is full!')),
               );
             }
           : () async {
@@ -317,7 +335,7 @@ class EventDetailsScreen extends StatelessWidget {
               );
               if (!success && value == 'Going') {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Sorry, this event is full!')),
+                  const SnackBar(content: Text('Sorry, this event is full!')),
                 );
               }
             },
@@ -356,7 +374,14 @@ class EventDetailsScreen extends StatelessWidget {
     return Icons.cancel;
   }
 
-  Widget _buildInfoRow(IconData icon, String label, String value, bool isDark) {
+  // Updated to accept 'trailing' widget
+  Widget _buildInfoRow(
+    IconData icon,
+    String label,
+    String value,
+    bool isDark, {
+    Widget? trailing,
+  }) {
     return Row(
       children: [
         Container(
@@ -390,6 +415,7 @@ class EventDetailsScreen extends StatelessWidget {
             ],
           ),
         ),
+        if (trailing != null) trailing,
       ],
     );
   }

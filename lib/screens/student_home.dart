@@ -7,6 +7,7 @@ import '../utils/constants.dart';
 import '../widgets/event_card.dart';
 import 'welcome_screen.dart';
 import 'calendar_screen.dart';
+import 'campus_map_screen.dart'; // Import map
 
 class StudentHomeScreen extends StatelessWidget {
   const StudentHomeScreen({super.key});
@@ -25,7 +26,7 @@ class StudentHomeScreen extends StatelessWidget {
             child: Consumer<AppProvider>(
               builder: (context, provider, child) {
                 final events = provider.filteredEvents;
-
+                // ... (Empty state and list view logic same as before)
                 if (events.isEmpty) {
                   return Center(
                     child: Column(
@@ -90,6 +91,15 @@ class StudentHomeScreen extends StatelessWidget {
           ),
           onPressed: () => themeProvider.toggleTheme(),
         ),
+        // New: General Map Access
+        IconButton(
+          icon: const Icon(Icons.map_outlined, color: Colors.white),
+          tooltip: 'Explore Map',
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const CampusMapScreen()),
+          ),
+        ),
         IconButton(
           icon: const Icon(Icons.calendar_month, color: Colors.white),
           onPressed: () => Navigator.push(
@@ -100,7 +110,6 @@ class StudentHomeScreen extends StatelessWidget {
         IconButton(
           icon: const Icon(Icons.logout_rounded, color: Colors.white),
           onPressed: () {
-            // Updated Logout: Reset theme + Logout
             Provider.of<ThemeProvider>(context, listen: false).resetTheme();
             Provider.of<AppProvider>(context, listen: false).logout();
 
@@ -115,6 +124,7 @@ class StudentHomeScreen extends StatelessWidget {
   }
 
   Widget _buildHeader(BuildContext context, bool isDark) {
+    // ... (Same header code as previous step) ...
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
@@ -139,6 +149,7 @@ class StudentHomeScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
+          // Search Bar
           Consumer<AppProvider>(
             builder: (context, provider, _) {
               return TextField(

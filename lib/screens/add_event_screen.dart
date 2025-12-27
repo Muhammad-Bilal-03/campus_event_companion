@@ -20,10 +20,14 @@ class AddEventScreen extends StatefulWidget {
 class _AddEventScreenState extends State<AddEventScreen> {
   final _titleController = TextEditingController();
   final _descController = TextEditingController();
-  final _locationController = TextEditingController();
+  // REMOVED: final _locationController = TextEditingController();
   final _categoryController = TextEditingController();
   final _linkController = TextEditingController();
-  final _seatsController = TextEditingController(); // New Controller
+  final _seatsController = TextEditingController();
+
+  // New: Dropdown State
+  String? _selectedLocation;
+
   DateTime _selectedDate = DateTime.now();
   final _formKey = GlobalKey<FormState>();
 
@@ -33,10 +37,12 @@ class _AddEventScreenState extends State<AddEventScreen> {
     if (widget.event != null) {
       _titleController.text = widget.event!.title;
       _descController.text = widget.event!.description;
-      _locationController.text = widget.event!.location;
+      // Set dropdown value (ensure it exists in the list, or handle custom)
+      if (AppConstants.campusLocations.containsKey(widget.event!.location)) {
+        _selectedLocation = widget.event!.location;
+      }
       _categoryController.text = widget.event!.category;
       _linkController.text = widget.event!.linkUrl ?? '';
-      // New: Load seats
       _seatsController.text = widget.event!.totalSeats?.toString() ?? '';
       _selectedDate = widget.event!.date;
     }
@@ -44,7 +50,6 @@ class _AddEventScreenState extends State<AddEventScreen> {
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
-      // New: Parse seats
       int? seats;
       if (_seatsController.text.isNotEmpty) {
         seats = int.tryParse(_seatsController.text);
@@ -55,11 +60,12 @@ class _AddEventScreenState extends State<AddEventScreen> {
         title: _titleController.text,
         description: _descController.text,
         date: _selectedDate,
-        location: _locationController.text,
+        // Use selected location from dropdown
+        location: _selectedLocation!,
         category: _categoryController.text,
         participationStatus: widget.event?.participationStatus ?? 'None',
         linkUrl: _linkController.text.isNotEmpty ? _linkController.text : null,
-        totalSeats: seats, // Save seats
+        totalSeats: seats,
         seatsTaken: widget.event?.seatsTaken ?? 0,
       );
 
@@ -167,10 +173,39 @@ class _AddEventScreenState extends State<AddEventScreen> {
                         Row(
                           children: [
                             Expanded(
-                              child: _buildTextField(
-                                _locationController,
-                                'Location',
-                                Icons.location_on,
+                              // REPLACED: Text Field with Dropdown
+                              child: DropdownButtonFormField<String>(
+                                value: _selectedLocation,
+                                isExpanded:
+                                    true, // FIXED: Added this to prevent overflow
+                                items: AppConstants.campusLocations.keys.map((
+                                  loc,
+                                ) {
+                                  return DropdownMenuItem(
+                                    value: loc,
+                                    child: Text(
+                                      loc,
+                                      overflow: TextOverflow
+                                          .ellipsis, // Added text handling
+                                    ),
+                                  );
+                                }).toList(),
+                                onChanged: (val) =>
+                                    setState(() => _selectedLocation = val),
+                                decoration: InputDecoration(
+                                  labelText: 'Location',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  prefixIcon: const Icon(
+                                    Icons.location_on,
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                                validator: (v) => v == null ? 'Required' : null,
+                                style: GoogleFonts.poppins(
+                                  color: Colors.black87,
+                                ),
                               ),
                             ),
                             const SizedBox(width: 16),
@@ -184,7 +219,6 @@ class _AddEventScreenState extends State<AddEventScreen> {
                           ],
                         ),
                         const SizedBox(height: 16),
-                        // New: Seats Input
                         _buildTextField(
                           _seatsController,
                           'Available Seats (Optional)',
