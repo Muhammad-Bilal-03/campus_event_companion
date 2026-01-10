@@ -23,6 +23,16 @@
 
 ---
 
+## 📸 Screenshots
+
+| **Student Dashboard** | **Interactive Map** |
+| :---: | :---: |
+| <img src="https://github.com/user-attachments/assets/7c9bceb3-f955-4d55-a4b0-cd6c3130fa17" width="300" /> | <img src="https://github.com/user-attachments/assets/751b33f4-5c43-4d46-952f-725166912122" width="300" /> |
+| **Event Details** | **Admin Console** |
+| <img src="https://github.com/user-attachments/assets/80f5f9d2-a144-4a1a-999d-8b70aa95ca2b" width="300" /> | <img src="https://github.com/user-attachments/assets/3844ae6d-978b-467a-bafa-20c15c0c3011" width="300" /> |
+
+---
+
 ## 🛠️ Tech Stack & Architecture
 
 This project follows a **Modular Architecture** with **Provider** for state management.
@@ -39,6 +49,38 @@ This project follows a **Modular Architecture** with **Provider** for state mana
 
 ---
 
+## 🏗️ Getting Started
+
+Follow these steps to set up the project locally.
+
+### Prerequisites
+* Flutter SDK installed
+* VS Code or Android Studio
+
+### Installation
+
+1.  **Clone the repository**
+    ```bash
+    git clone [https://github.com/Muhammad-Bilal-03/campus_event_companion.git](https://github.com/Muhammad-Bilal-03/campus_event_companion.git)
+    ```
+
+2.  **Navigate to the project directory**
+    ```bash
+    cd campus_event_companion
+    ```
+
+3.  **Install dependencies**
+    ```bash
+    flutter pub get
+    ```
+
+4.  **Run the App**
+    ```bash
+    flutter run
+    ```
+
+---
+
 ## 📂 Project Structure
 
 ```text
@@ -50,3 +92,20 @@ lib/
 ├── utils/          # Constants, Themes, and App Colors
 ├── widgets/        # Reusable Components (EventCard, MapPainter)
 └── main.dart       # App Entry Point
+
+```
+
+---
+
+## 👤 Author
+
+**Muhammad Bilal**
+
+* **Role:** Lead Developer
+* **LinkedIn:** [linkedin.com/in/muhammad-bilal-bsse](https://www.linkedin.com/in/muhammad-bilal-bsse/)
+* **GitHub:** [github.com/Muhammad-Bilal-03](https://www.google.com/search?q=https://github.com/Muhammad-Bilal-03)
+
+*Developed as a Semester Project for BS Software Engineering at COMSATS University.
+
+
+
